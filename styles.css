@@ -1,8 +1,94 @@
-/*
+.block-language-relation-forge {
+    background-color: var(--background-secondary);
+    margin-block: var(--p-spacing);
+    border-radius: var(--radius-s);
+    padding-top: var(--size-4-2);
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+    .error {
+        --code-white-space: pre-line;
+    }
 
-If your plugin does not need CSS, delete this file.
+    .error_message {
+        color: var(--color-red);
+    }
 
-*/
+    .add-button {
+        --icon-color: currentColor;
+        color: var(--color-green);
+    }
+
+    .search-results-info {
+        white-space: unset;
+    }
+
+    .tree-item-self {
+        align-items: center;
+        gap: var(--size-2-2);
+    }
+
+    .result-list {
+        font-size: var(--font-ui-smaller);
+        line-height: var(--line-height-tight);
+        background-color: var(--search-result-background);
+        border-radius: var(--radius-s);
+        overflow: hidden;
+        margin: var(--size-4-1) 0 var(--size-4-2);
+        color: var(--text-muted);
+        box-shadow: 0 0 0 1px var(--background-modifier-border);
+    }
+
+    .result-item {
+        cursor: var(--cursor);
+        position: relative;
+        padding: var(--size-4-2) var(--size-4-5) var(--size-4-2) var(--size-4-3);
+        width: 100%;
+        border-bottom: 1px solid var(--background-modifier-border);
+        display: flex;
+
+        ul {
+            margin-block: 0;
+        }
+    }
+
+    .result-item-flair.relation-label {
+        position: absolute;
+        white-space: pre;
+        right: var(--size-4-2);
+        bottom: 0;
+        transform: translateY(50%);
+        background-color: var(--background-primary);
+        padding: var(--size-4-2);
+    }
+
+    .result-item:last-child {
+        border-bottom: none;
+    }
+
+    .result-item-description {
+        flex-grow: 1;
+    }
+
+    .result-item-flair {
+        padding-inline-start: var(--size-4-1);
+        margin-inline-start: auto;
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        font-size: var(--font-ui-smaller);
+        color: var(--text-faint);
+        line-height: 1;
+    }
+
+    .inline-icon {
+        --icon-size: 1em;
+        --icon-stroke: 1;
+        --icon-color: var(--text-muted);
+        display: inline-block;
+        vertical-align: middle;
+        color: var(--icon-color);
+    }
+
+    .score-high   { color: color-mix(in lab, var(--color-orange), var(--text-normal) 40%); }
+    .score-medium { color: color-mix(in lab, var(--color-orange), var(--text-normal) 60%); }
+    .score-low    { color: color-mix(in lab, var(--color-orange), var(--text-normal) 80%); }
+}

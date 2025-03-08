@@ -52,7 +52,7 @@ const context = await esbuild.context({
 			],
 		}),
 		esbuildSvelte({
-			compilerOptions: { css: 'injected', dev: true, sveltePath: 'svelte' },
+			compilerOptions: { css: 'injected', dev: true },
 			preprocess: sveltePreprocess(),
 			filterWarnings: warning => {
 				// we don't want warnings from node modules that we can do nothing about

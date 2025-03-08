@@ -1,10 +1,10 @@
 {
-	"id": "lemons-plugin-template",
-	"name": "Lemons Plugin Template",
-	"version": "0.0.5",
-	"minAppVersion": "1.4.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Moritz Jung",
-	"authorUrl": "https://mprojectscode.github.io/",
-	"isDesktopOnly": false
+	"id": "relation-forge",
+	"name": "Relation Forge",
+	"version": "1.0.0",
+	"minAppVersion": "1.8.9",
+	"description": "Comprehensive worldbuilding tool that transforms character relationships into a powerful database, enabling complex social network analysis and narrative development through interactive graph exploration.",
+	"author": "Kapirklaa",
+	"authorUrl": "https://github.com/ElsaTam",
+	"isDesktopOnly": true
 }
