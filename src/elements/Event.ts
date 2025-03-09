@@ -10,12 +10,12 @@ export class Event implements IElement {
 
     startDate: Date | null = null;
     endDate: Date | null = null;
-    importance: NumberRange<'importance'>;
+    importance: NumberRange<'eventImportance'>;
 
     constructor(id: string, name: string,) {
         this.id = id;
         this.name = name;
-        this.importance = newRange('importance');
+        this.importance = newRange('eventImportance');
     }
 
     public getType(): ElementType {
@@ -37,8 +37,8 @@ export class Event implements IElement {
         if (page.hasOwnProperty('endDate')) {
             event.endDate = page.endDate
         }
-        if (typeof page[settings.ranges['importance'].property] === 'string') {
-            event.importance = newRange('importance', page[settings.ranges['importance'].property]);
+        if (typeof page[settings.ranges['eventImportance'].property] === 'string') {
+            event.importance = newRange('eventImportance', page[settings.ranges['eventImportance'].property]);
         }
 
         event.relations = ElementsParser.parseRelations(page, settings);

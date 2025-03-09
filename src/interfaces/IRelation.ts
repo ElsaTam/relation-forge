@@ -15,7 +15,7 @@ export interface IRelation {
     trust?: NumberRange<'trust'>;           // the trust of the relationship
 
     role?: string;                // the role of the character in an event or faction
-    impact?: NumberRange<'impact'>;         // how impactful an even has been on a character
+    impact?: NumberRange<'impact'>;         // how impactful an event has been on a character
     consequence?: string;         // what is the consequence of the event on the character
 
     create: (forge: Forge) => Promise<void>;

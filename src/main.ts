@@ -14,7 +14,7 @@ import { Forge } from './core/Forge';
 
 export default class RelationForgePlugin extends Plugin {
 	settings: RelationForgeSettings = DEFAULT_SETTINGS;
-	forge: Forge | null = null;
+	forge: Forge = new Forge(this);;
 
 	async onload() {
 		await this.loadSettings();
@@ -38,8 +38,8 @@ export default class RelationForgePlugin extends Plugin {
 	}
 
 	private init() {
-		if (this.forge) return;
-		this.forge = new Forge(this);
+		if (this.forge.isLoaded) return;
+		this.forge.load();
 	}
 
 	onunload() {

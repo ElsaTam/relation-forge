@@ -1,16 +1,18 @@
 import { App, Modal, Setting } from "obsidian";
-import { DEFAULT_RANGES, RangeRegistry, type RelationAttribute, type RelationForgeSettings } from "src/internal";
+import { camelCaseToSentence, DEFAULT_RANGES, PropertyDescriptions, type RangeConfiguration, type RelationAttribute, type RelationForgeSettings } from "src/internal";
 import type RelationForgePlugin from "src/main";
 
 export class RangeConfigsModal extends Modal {
-    plugin: RelationForgePlugin;
-    settings: RelationForgeSettings;
+    #plugin: RelationForgePlugin;
+    #settings: RelationForgeSettings;
+    #inputs: Record<string, Record<string, HTMLInputElement>> = {};
 
     constructor(app: App, plugin: RelationForgePlugin, settings: RelationForgeSettings) {
         super(app);
-        this.plugin = plugin;
-        this.settings = settings;
-        this.setTitle("Range configurations")
+        this.#plugin = plugin;
+        this.#settings = settings;
+        this.setTitle("Numeric properties");
+        this.modalEl.addClass("forge-modal");
     }
 
     override onOpen() {
@@ -19,48 +21,76 @@ export class RangeConfigsModal extends Modal {
         new Setting(this.contentEl)
             .setDesc("Restart Obsidian after any change.");
 
-        const inputs: Record<string, Record<string, HTMLInputElement>> = {};
 
-        for (let [type, config] of Object.entries(this.settings.ranges)) {
-            const _type = type as RelationAttribute;
-            inputs[_type] = {};
+        new Setting(this.contentEl)
+            .setName("Relations")
+            .setHeading();
 
-            new Setting(this.contentEl)
-                .setName(type)
-                .setHeading()
-                .addExtraButton(cb => {
-                    cb.setIcon('rotate-ccw');
-                    cb.onClick(() => {
-                        this.settings.ranges[_type] = DEFAULT_RANGES[_type];
-                        for (const [key, input] of Object.entries(inputs[type])) {
-                            input.value = this.settings.ranges[_type][key as 'property' | 'min' | 'max' | 'default'].toString();
+        this.addRange("affinity", PropertyDescriptions.relations.affinity, this.#settings.ranges.affinity);
+        this.addRange("frequency", PropertyDescriptions.relations.frequency, this.#settings.ranges.frequency);
+        this.addRange("impact", PropertyDescriptions.relations.impact, this.#settings.ranges.impact);
+        this.addRange("influence", PropertyDescriptions.relations.influence, this.#settings.ranges.influence);
+        this.addRange("trust", PropertyDescriptions.relations.trust, this.#settings.ranges.trust);
+
+        new Setting(this.contentEl)
+            .setName("Places")
+            .setHeading();
+
+        this.addRange("placeImportance", PropertyDescriptions.places.importance, this.#settings.ranges.placeImportance);
+
+        new Setting(this.contentEl)
+            .setName("Events")
+            .setHeading();
+
+        this.addRange("eventImportance", PropertyDescriptions.events.importance, this.#settings.ranges.eventImportance);
+
+        new Setting(this.contentEl)
+            .setName("Factions")
+            .setHeading();
+
+        this.addRange("power", PropertyDescriptions.factions.power, this.#settings.ranges.power);
+    }
+
+    private addRange(type: RelationAttribute, description: string, config: RangeConfiguration) {
+        this.#inputs[type] = {};
+
+        new Setting(this.contentEl)
+            .setName(camelCaseToSentence(type))
+            .setDesc(description)
+            .addExtraButton(cb => {
+                cb.setIcon('rotate-ccw');
+                cb.onClick(() => {
+                    this.#settings.ranges[type] = DEFAULT_RANGES[type];
+                    for (const [key, input] of Object.entries(this.#inputs[type])) {
+                        input.value = this.#settings.ranges[type][key as 'property' | 'min' | 'max' | 'default'].toString();
+                    }
+                    this.#plugin.saveSettings();
+                })
+            });
+
+        const div = this.contentEl.createDiv({ cls: "range-settings" });
+
+        for (const [key, value] of Object.entries(config)) {
+            new Setting(div)
+                .setName(key)
+                .addText(cb => {
+                    this.#inputs[type][key] = cb.inputEl;
+                    cb.setValue(value.toString());
+                    cb.onChange((value) => {
+                        if (key === 'property') {
+                            this.#settings.ranges[type][key] = value;
                         }
-                        this.plugin.saveSettings();
+                        else if (key === 'min' || key === 'max' || key === 'default') {
+                            try {
+                                this.#settings.ranges[type][key] = parseInt(value);
+                                this.#plugin.saveSettings();
+                            }
+                            catch {
+
+                            }
+                        }
                     })
                 });
-
-            for (const [key, value] of Object.entries(config)) {
-                new Setting(this.contentEl)
-                    .setName(key)
-                    .addText(cb => {
-                        inputs[_type][key] = cb.inputEl;
-                        cb.setValue(value.toString());
-                        cb.onChange((value) => {
-                            if (key === 'property') {
-                                this.settings.ranges[_type][key] = value;
-                            }
-                            else if (key === 'min' || key === 'max' || key === 'default') {
-                                try {
-                                    this.settings.ranges[_type][key] = parseInt(value);
-                                    this.plugin.saveSettings();
-                                }
-                                catch {
-
-                                }
-                            }
-                        })
-                    });
-            }
         }
     }
 }

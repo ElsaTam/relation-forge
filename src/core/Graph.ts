@@ -19,15 +19,12 @@ import type { Forge } from './Forge';
 
 export class Graph extends Component {
     #forge: Forge;
-    #dv: DataviewAdapter;
     #centralityScores?: any;
-    #pagerankScores?: any;
     #core?: Graphology;
 
     constructor(forge: Forge) {
         super();
         this.#forge = forge;
-        this.#dv = new DataviewAdapter(this.#forge.app);
     }
 
     override onload(): void {
@@ -35,9 +32,6 @@ export class Graph extends Component {
 
         try { this.#centralityScores = betweennessCentrality(this.#core); }
         catch { this.#centralityScores = undefined; }
-
-        try { this.#pagerankScores = pagerank(this.#core); }
-        catch { this.#pagerankScores = undefined; }
     }
 
     get core(): Graphology {

@@ -7,7 +7,8 @@ export const DEFAULT_RANGES = {
     'trust': { min: -10, max: 10, default: 0, property: 'trust' },
 
     // Places and Events
-    'importance': { min: 0, max: 10, default: 0, property: 'importance' },
+    'placeImportance': { min: 0, max: 10, default: 0, property: 'importance' },
+    'eventImportance': { min: 0, max: 10, default: 0, property: 'importance' },
 
     // Factions
     'power': { min: 0, max: 10, default: 0, property: 'power' },

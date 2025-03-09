@@ -1,3 +1,4 @@
+export * from './constants/PropertyDescriptions';
 export * from './constants/RangeConfigs';
 
 export * from './core/NumberRange';
@@ -18,6 +19,7 @@ export * from './interfaces/IReason';
 export * from './interfaces/IRelation';
 export * from './interfaces/ITriad';
 
+export * from './utils/stringsManipulation';
 export * from './utils/helpers';
 
 export * from './elements/Character';

@@ -9,6 +9,7 @@ export class Forge extends Component {
     #graph: Graph;
     #algorithms: Algorithms;
     #processor: MarkdownCodeBlockProcessor;
+    #isLoaded: boolean = false;
 
     constructor(plugin: RelationForgePlugin) {
         super();
@@ -30,6 +31,7 @@ export class Forge extends Component {
     override onload(): void {
         this.#graph.load();
         this.#plugin.registerMarkdownCodeBlockProcessor('relation-forge', (source, el, ctx) => this.#processor.handleRelationForgeBlock(source, el, ctx));
+        this.#isLoaded = true;
     }
 
     get app(): App { return this.#app; }
@@ -37,4 +39,5 @@ export class Forge extends Component {
     get plugin(): RelationForgePlugin { return this.#plugin; }
     get graph(): Graph { return this.#graph; }
     get algorithms(): Algorithms { return this.#algorithms; }
+    get isLoaded(): boolean { return this.#isLoaded };
 }

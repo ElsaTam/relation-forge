@@ -11,7 +11,6 @@ import {
     Relation,
     Character,
     type IRelation,
-    NumberRange,
     newRange,
 } from "src/internal";
 
@@ -156,7 +155,7 @@ export class CompleteTriad implements IAlgorithm {
                     newRelation: new Relation({
                         source: missingRel.source.id,
                         target: missingRel.target.id,
-                        label: 'relation',
+                        label: 'character',
                         influence: newRange('influence'),
                         affinity: newRange('affinity', recommendedStrength),
                     }),

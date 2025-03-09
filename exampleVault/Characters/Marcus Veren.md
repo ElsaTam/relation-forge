@@ -9,34 +9,34 @@ character_traits:
   - patient
 status: alive
 faction_1: "[[Royal Court]]"
-relation_1: "[[Helena Blackwood]]"
-relation_1_type: caution
-relation_1_affinity: -2
-relation_1_origin: Suspicious of her growing influence
-relation_1_frequency: weekly
-relation_1_trust: 3
-relation_1_influence: 2
-relation_2: "[[King Aldric]]"
-relation_2_type: loyalty
-relation_2_affinity: 9
-relation_2_origin: Sworn an oath of absolute fealty
-relation_2_frequency: daily
-relation_2_trust: 9
-relation_2_influence: 4
-relation_3: "[[Eliza Thorn]]"
-relation_3_type: protection
-relation_3_affinity: 6
-relation_3_origin: Promised her father to keep her safe
-relation_3_frequency: weekly
-relation_3_trust: 7
-relation_3_influence: 5
-relation_4: "[[Lord Farron]]"
-relation_4_type: rivalry
-relation_4_affinity: -7
-relation_4_origin: Uncovered Farron's plot against the king
-relation_4_frequency: monthly
-relation_4_trust: 1
-relation_4_influence: 0
+character_1: "[[Helena Blackwood]]"
+character_1_type: caution
+character_1_affinity: -2
+character_1_origin: Suspicious of her growing influence
+character_1_frequency: weekly
+character_1_trust: 3
+character_1_influence: 2
+character_2: "[[King Aldric]]"
+character_2_type: loyalty
+character_2_affinity: 9
+character_2_origin: Sworn an oath of absolute fealty
+character_2_frequency: daily
+character_2_trust: 9
+character_2_influence: 4
+character_3: "[[Eliza Thorn]]"
+character_3_type: protection
+character_3_affinity: 6
+character_3_origin: Promised her father to keep her safe
+character_3_frequency: weekly
+character_3_trust: 7
+character_3_influence: 5
+character_4: "[[Lord Farron]]"
+character_4_type: rivalry
+character_4_affinity: -7
+character_4_origin: Uncovered Farron's plot against the king
+character_4_frequency: monthly
+character_4_trust: 1
+character_4_influence: 0
 ---
 
 

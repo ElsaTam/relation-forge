@@ -37,7 +37,7 @@ export class GraphologyBuilder {
                     });
                 }
 
-                graph.addEdge(sourceElement.id, targetElement.id, {
+                graph.addEdgeWithKey(`${sourceElement.id}->${targetElement.id}`, sourceElement.id, targetElement.id, {
                     relation: relation
                 });
             }

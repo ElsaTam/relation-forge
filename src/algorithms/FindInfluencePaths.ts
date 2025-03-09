@@ -10,9 +10,7 @@ import {
     type IRelation,
     type RelationForgeSettings
 } from "src/internal";
-import { astar } from "graphology-shortest-path";
-import { bfsFromNode } from "graphology-traversal/bfs";
-import { allSimpleEdgePaths, allSimplePaths } from "graphology-simple-path";
+import { allSimpleEdgePaths } from "graphology-simple-path";
 import type { Forge } from "src/core/Forge";
 
 export class FindInfluencePaths implements IAlgorithm {

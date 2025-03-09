@@ -6,12 +6,12 @@ export class Place implements IElement {
     relations: Relation[] = [];
     description: string = "";
 
-    importance: NumberRange<'importance'>;
+    importance: NumberRange<'placeImportance'>;
 
     constructor(id: string, name: string) {
         this.id = id;
         this.name = name;
-        this.importance = newRange('importance');
+        this.importance = newRange('placeImportance');
     }
 
     public getType(): ElementType {
@@ -27,8 +27,8 @@ export class Place implements IElement {
         if (typeof page.description === 'string') {
             place.description = page.description
         }
-        if (typeof page[settings.ranges['importance'].property] === 'string') {
-            place.importance = newRange('importance', page[settings.ranges['importance'].property]);
+        if (typeof page[settings.ranges['placeImportance'].property] === 'string') {
+            place.importance = newRange('placeImportance', page[settings.ranges['placeImportance'].property]);
         }
 
         place.relations = ElementsParser.parseRelations(page, settings);

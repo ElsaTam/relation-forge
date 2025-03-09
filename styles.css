@@ -88,7 +88,48 @@
         color: var(--icon-color);
     }
 
-    .score-high   { color: color-mix(in lab, var(--color-orange), var(--text-normal) 40%); }
-    .score-medium { color: color-mix(in lab, var(--color-orange), var(--text-normal) 60%); }
-    .score-low    { color: color-mix(in lab, var(--color-orange), var(--text-normal) 80%); }
+    .score-high {
+        color: color-mix(in lab, var(--color-orange), var(--text-normal) 40%);
+    }
+
+    .score-medium {
+        color: color-mix(in lab, var(--color-orange), var(--text-normal) 60%);
+    }
+
+    .score-low {
+        color: color-mix(in lab, var(--color-orange), var(--text-normal) 80%);
+    }
+}
+
+
+.forge-modal {
+    .range-settings {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(26ch, 1fr));
+        gap: var(--size-4-4);
+        padding: 0.75em 0;
+
+        input {
+            width: 15ch;
+        }
+
+        .setting-item {
+            border-top: none;
+            padding-block: 0;
+        }
+
+        .setting-item-info {
+            flex: 0 0 9ch;
+            margin-inline-end: 0;
+        }
+
+        .setting-item-control {
+            flex: none;
+        }
+    }
+
+    hr {
+        margin-block-start: var(--size-4-4);
+        margin-block-end: var(--size-4-2);
+    }
 }
