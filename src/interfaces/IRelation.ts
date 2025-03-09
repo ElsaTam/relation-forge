@@ -1,5 +1,5 @@
-import type { App } from "obsidian";
-import { NumberRange, type RelationForgeSettings, type RelationType } from "src/internal";
+import type { Forge } from "src/core/Forge";
+import { NumberRange, type RelationType } from "src/internal";
 
 export interface IRelation {
     source: string;
@@ -18,5 +18,5 @@ export interface IRelation {
     impact?: NumberRange<'impact'>;         // how impactful an even has been on a character
     consequence?: string;         // what is the consequence of the event on the character
 
-    create: (app: App, settings: RelationForgeSettings) => Promise<void>;
+    create: (forge: Forge) => Promise<void>;
 }

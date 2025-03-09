@@ -8,20 +8,16 @@ import {
     type IAlgorithmProcessor,
     TriadCompletionProcessor,
     InfluencePathsProcessor,
-    type RelationForgeSettings
 } from "src/internal";
 import BlockError from "../components/BlockError.svelte";
 import { mount } from "svelte";
+import type { Forge } from "src/core/Forge";
 
 export class MarkdownCodeBlockProcessor {
-    private app: App;
-    private settings: RelationForgeSettings;
-    private algorithms: Algorithms;
+    #forge: Forge;
 
-    constructor(app: App, settings: RelationForgeSettings, algorithms: Algorithms) {
-        this.app = app;
-        this.settings = settings;
-        this.algorithms = algorithms;
+    constructor(forge: Forge) {
+        this.#forge = forge;
     }
 
     public async handleRelationForgeBlock(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): Promise<void> {
@@ -31,16 +27,16 @@ export class MarkdownCodeBlockProcessor {
             let processor: IAlgorithmProcessor;
             switch (query.function) {
                 case 'COMPLETE TRIAD':
-                    processor = new TriadCompletionProcessor(this.app, this.settings, this.algorithms.completeTriad);
+                    processor = new TriadCompletionProcessor(this.#forge, this.#forge.algorithms.completeTriad);
                     break;
                 case 'FIND ALLIES':
-                    processor = new AlliesProcessor(this.app, this.algorithms.findAllies);
+                    processor = new AlliesProcessor(this.#forge, this.#forge.algorithms.findAllies);
                     break;
                 case 'FIND INFLUENCE PATHS':
-                    processor = new InfluencePathsProcessor(this.app, this.algorithms.findInfluencePaths);
+                    processor = new InfluencePathsProcessor(this.#forge, this.#forge.algorithms.findInfluencePaths);
                     break;
                 case 'FIND UNSTABLE TRIADS':
-                    processor = new UnstableTriadsProcessor(this.app, this.algorithms.findUnstableTriads);
+                    processor = new UnstableTriadsProcessor(this.#forge, this.#forge.algorithms.findUnstableTriads);
                     break;
                 case '':
                     return;
@@ -112,28 +108,28 @@ export class MarkdownCodeBlockProcessor {
         const sourceLine = lines.find(line => line.match(/\tSOURCE\s+/i));
         if (sourceLine) {
             lines.remove(sourceLine);
-            query.source = ElementsParser.parseLink(this.app, sourceLine.trim());
+            query.source = ElementsParser.parseLink(this.#forge.app, sourceLine.trim());
         }
 
         // Process TARGET clause
         const targetLine = lines.find(line => line.match(/\tTARGET\s+/i));
         if (targetLine) {
             lines.remove(targetLine);
-            query.target = ElementsParser.parseLink(this.app, targetLine.trim());
+            query.target = ElementsParser.parseLink(this.#forge.app, targetLine.trim());
         }
 
         // Process CHAR1 clause
         const char1Line = lines.find(line => line.match(/\tCHAR1\s+/i));
         if (char1Line) {
             lines.remove(char1Line);
-            query.source = ElementsParser.parseLink(this.app, char1Line.trim());
+            query.source = ElementsParser.parseLink(this.#forge.app, char1Line.trim());
         }
 
         // Process CHAR2 clause
         const char2Line = lines.find(line => line.match(/\tCHAR2\s+/i));
         if (char2Line) {
             lines.remove(char2Line);
-            query.target = ElementsParser.parseLink(this.app, char2Line.trim());
+            query.target = ElementsParser.parseLink(this.#forge.app, char2Line.trim());
         }
 
         // Process OPTION clause and following lines

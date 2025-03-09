@@ -6,30 +6,28 @@ import {
     type ICompleteTriadQuery,
     type ITriadCompletionRecommendation,
     type RelationForgeQuery,
-    type RelationForgeSettings
 } from "src/internal";
 import TriadCompletionResults from "../components/TriadCompletionResults.svelte";
 import { mount } from "svelte";
+import type { Forge } from "src/core/Forge";
 
 export class TriadCompletionProcessor implements IAlgorithmProcessor {
-    private component: ReturnType<typeof TriadCompletionResults> | undefined;
-    private query: ICompleteTriadQuery | undefined;
-    private app: App;
-    private algorithm: IAlgorithm;
-    private settings: RelationForgeSettings;
-    private results: ITriadCompletionRecommendation[] = [];
+    #component: ReturnType<typeof TriadCompletionResults> | undefined;
+    #query: ICompleteTriadQuery | undefined;
+    #forge: Forge;
+    #algorithm: IAlgorithm;
+    #results: ITriadCompletionRecommendation[] = [];
 
-    constructor(app: App, settings: RelationForgeSettings, algorithm: IAlgorithm) {
-        this.app = app;
-        this.settings = settings;
-        this.algorithm = algorithm;
+    constructor(forge: Forge, algorithm: IAlgorithm) {
+        this.#forge = forge;
+        this.#algorithm = algorithm;
     }
 
     // Execute the query and return results
     async executeQuery(query: RelationForgeQuery): Promise<any> {
         if (!query.source || !query.target) throw new Error("Invalid query");
 
-        this.query = {
+        this.#query = {
             source: query.source,
             target: query.target,
             options: {
@@ -46,22 +44,22 @@ export class TriadCompletionProcessor implements IAlgorithmProcessor {
     }
 
     async fetchResults(): Promise<ITriadCompletionRecommendation[]> {
-        if (!this.query) return [];
-        this.results = await this.algorithm.exec(this.query);
-        return this.results;
+        if (!this.#query) return [];
+        this.#results = await this.#algorithm.exec(this.#query);
+        return this.#results;
     }
 
     // Render results based on display option
     renderResults(el: HTMLElement): MarkdownRenderChild | undefined {
-        if (!this.query) return;
-        const query = this.query;
+        if (!this.#query) return;
+        const query = this.#query;
 
         const renderChild = new MarkdownRenderChild(el);
         renderChild.onload = () => {
-            this.component = mount(TriadCompletionResults, {
+            this.#component = mount(TriadCompletionResults, {
                 target: renderChild.containerEl,
                 props: {
-                    app: this.app,
+                    app: this.#forge.app,
                     query: query,
                     fetchResults: this.fetchResults.bind(this),
                     createRelation: this.createRelation.bind(this),
@@ -73,7 +71,7 @@ export class TriadCompletionProcessor implements IAlgorithmProcessor {
     }
 
     async createRelation(completion: ITriadCompletionRecommendation): Promise<void> {
-        return completion.newRelation.create(this.app, this.settings)
+        return completion.newRelation.create(this.#forge)
             .then(() => {
                 new Notice("Relation created in " + completion.newRelation.source);
             }).catch((error) => {

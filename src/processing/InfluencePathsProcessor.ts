@@ -10,24 +10,25 @@ import {
 } from "src/internal";
 import InfluencePathsResults from "../components/InfluencePathsResults.svelte";
 import { mount } from "svelte";
+import type { Forge } from "src/core/Forge";
 
 export class InfluencePathsProcessor implements IAlgorithmProcessor {
-    private component: ReturnType<typeof InfluencePathsResults> | undefined;
-    private query: IFindInfluencePathsQuery | undefined;
-    private app: App;
-    private algorithm: IAlgorithm;
-    private results: IInfluencePath[] = [];
+    #component: ReturnType<typeof InfluencePathsResults> | undefined;
+    #query: IFindInfluencePathsQuery | undefined;
+    #forge: Forge;
+    #algorithm: IAlgorithm;
+    #results: IInfluencePath[] = [];
 
-    constructor(app: App, algorithm: IAlgorithm) {
-        this.app = app;
-        this.algorithm = algorithm;
+    constructor(forge: Forge, algorithm: IAlgorithm) {
+        this.#forge = forge;
+        this.#algorithm = algorithm;
     }
 
     // Execute the query and return results
     async executeQuery(query: RelationForgeQuery): Promise<any> {
         if (!query.source || !query.target) throw new Error("Invalid query: source and target characters are required");
 
-        this.query = {
+        this.#query = {
             source: query.source,
             target: query.target,
             options: {
@@ -44,22 +45,22 @@ export class InfluencePathsProcessor implements IAlgorithmProcessor {
     }
 
     async fetchResults(): Promise<IInfluencePath[]> {
-        if (!this.query) return [];
-        this.results = await this.algorithm.exec(this.query);
-        return this.results;
+        if (!this.#query) return [];
+        this.#results = await this.#algorithm.exec(this.#query);
+        return this.#results;
     }
 
     // Render results based on display option
     renderResults(el: HTMLElement): MarkdownRenderChild | undefined {
-        if (!this.query) return;
-        const query = this.query;
+        if (!this.#query) return;
+        const query = this.#query;
 
         const renderChild = new MarkdownRenderChild(el);
         renderChild.onload = () => {
-            this.component = mount(InfluencePathsResults, {
+            this.#component = mount(InfluencePathsResults, {
                 target: renderChild.containerEl,
                 props: {
-                    app: this.app,
+                    app: this.#forge.app,
                     query: query,
                     fetchResults: this.fetchResults.bind(this),
                 }

@@ -8,24 +8,25 @@ import {
 } from "src/internal";
 import AlliesResults from "../components/AlliesResults.svelte";
 import { mount } from "svelte";
+import type { Forge } from "src/core/Forge";
 
 export class AlliesProcessor implements IAlgorithmProcessor {
-    private component: ReturnType<typeof AlliesResults> | undefined;
-    private query: IFindAlliesQuery | undefined;
-    private app: App;
-    private algorithm: IAlgorithm;
-    private results: IAlly[] = [];
+    #component: ReturnType<typeof AlliesResults> | undefined;
+    #query: IFindAlliesQuery | undefined;
+    #forge: Forge;
+    #algorithm: IAlgorithm;
+    #results: IAlly[] = [];
 
-    constructor(app: App, algorithm: IAlgorithm) {
-        this.app = app;
-        this.algorithm = algorithm;
+    constructor(forge: Forge, algorithm: IAlgorithm) {
+        this.#forge = forge;
+        this.#algorithm = algorithm;
     }
 
     // Execute the query and return results
     async executeQuery(query: RelationForgeQuery): Promise<any> {
         if (!query.source || !query.target) throw new Error("Invalid query");
 
-        this.query = {
+        this.#query = {
             source: query.source,
             target: query.target,
             options: {
@@ -38,22 +39,22 @@ export class AlliesProcessor implements IAlgorithmProcessor {
     }
 
     async fetchResults(): Promise<IAlly[]> {
-        if (!this.query) return [];
-        this.results = await this.algorithm.exec(this.query);
-        return this.results;
+        if (!this.#query) return [];
+        this.#results = await this.#algorithm.exec(this.#query);
+        return this.#results;
     }
 
     // Render results based on display option
     renderResults(el: HTMLElement): MarkdownRenderChild | undefined {
-        if (!this.query) return;
-        const query = this.query;
+        if (!this.#query) return;
+        const query = this.#query;
 
         const renderChild = new MarkdownRenderChild(el);
         renderChild.onload = () => {
-            this.component = mount(AlliesResults, {
+            this.#component = mount(AlliesResults, {
                 target: renderChild.containerEl,
                 props: {
-                    app: this.app,
+                    app: this.#forge.app,
                     query: query,
                     fetchResults: this.fetchResults.bind(this),
                 }

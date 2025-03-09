@@ -13,6 +13,7 @@ import {
     assignDefined
 } from 'src/internal';
 import { astar } from 'graphology-shortest-path';
+import type { Forge } from 'src/core/Forge';
 
 
 /**
@@ -56,9 +57,9 @@ export class FindAllies implements IAlgorithm {
     private graph: Graph;
     private settings: RelationForgeSettings;
 
-    constructor(graph: Graph, settings: RelationForgeSettings) {
-        this.graph = graph;
-        this.settings = settings;
+    constructor(forge: Forge) {
+        this.graph = forge.graph;
+        this.settings = forge.settings;
     }
 
     public async exec(query: IFindAlliesQuery): Promise<IAlly[]> {
@@ -269,9 +270,7 @@ export class FindAllies implements IAlgorithm {
     }
 
     private calculateCentralityScore(scoreCard: ScoreCard, candidate: Character): void {
-        if (!this.graph.centralityScores) return;
-
-        const centralityScore: number = this.graph.centralityScores[candidate.id] || 0;
+        const centralityScore: number = this.graph.getCentrality(candidate.id);
         scoreCard.addScore('candidate_entrality', ScoreCalculator.centrality(centralityScore, this.settings),
             `Centrality in the network`);
     }

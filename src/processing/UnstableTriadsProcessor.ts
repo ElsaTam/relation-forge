@@ -1,5 +1,4 @@
 import {
-    Algorithms,
     parseBool,
     type IAlgorithm,
     type IAlgorithmProcessor,
@@ -10,24 +9,25 @@ import type {
     RelationForgeQuery
 } from "../types/RelationForgeQuery";
 import TriadsResults from "../components/TriadsResults.svelte";
-import { MarkdownRenderChild, type App } from "obsidian";
+import { MarkdownRenderChild } from "obsidian";
 import { mount } from "svelte";
+import type { Forge } from "src/core/Forge";
 
 export class UnstableTriadsProcessor implements IAlgorithmProcessor {
-    private component: ReturnType<typeof TriadsResults> | undefined;
-    private query: IFindUnstableTriadsQuery | undefined;
-    private app: App;
-    private algorithm: IAlgorithm;
-    private results: ITriad[] = [];
+    #component: ReturnType<typeof TriadsResults> | undefined;
+    #query: IFindUnstableTriadsQuery | undefined;
+    #forge: Forge;
+    #algorithm: IAlgorithm;
+    #results: ITriad[] = [];
 
-    constructor(app: App, algorithm: IAlgorithm) {
-        this.app = app;
-        this.algorithm = algorithm;
+    constructor(forge: Forge, algorithm: IAlgorithm) {
+        this.#forge = forge;
+        this.#algorithm = algorithm;
     }
 
     // Execute the query and return results
     async executeQuery(query: RelationForgeQuery): Promise<any> {
-        this.query = {
+        this.#query = {
             options: {
                 max: query.options.max ? parseInt(query.options.max) : undefined,
                 sort: query.options.sort ? parseInt(query.options.sort) < 0 ? -1 : 1 : undefined,
@@ -42,22 +42,22 @@ export class UnstableTriadsProcessor implements IAlgorithmProcessor {
     }
 
     async fetchResults(): Promise<ITriad[]> {
-        if (!this.query) return [];
-        this.results = await this.algorithm.exec(this.query);
-        return this.results;
+        if (!this.#query) return [];
+        this.#results = await this.#algorithm.exec(this.#query);
+        return this.#results;
     }
 
     // Render results based on display option
     renderResults(el: HTMLElement): MarkdownRenderChild | undefined {
-        if (!this.query) return;
-        const query = this.query;
+        if (!this.#query) return;
+        const query = this.#query;
 
         const renderChild = new MarkdownRenderChild(el);
         renderChild.onload = () => {
-            this.component = mount(TriadsResults, {
+            this.#component = mount(TriadsResults, {
                 target: renderChild.containerEl,
                 props: {
-                    app: this.app,
+                    app: this.#forge.app,
                     query: query,
                     fetchResults: this.fetchResults.bind(this),
                 }

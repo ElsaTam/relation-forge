@@ -13,14 +13,15 @@ import {
 import { astar } from "graphology-shortest-path";
 import { bfsFromNode } from "graphology-traversal/bfs";
 import { allSimpleEdgePaths, allSimplePaths } from "graphology-simple-path";
+import type { Forge } from "src/core/Forge";
 
 export class FindInfluencePaths implements IAlgorithm {
     private graph: Graph;
     private settings: RelationForgeSettings;
 
-    constructor(graph: Graph, settings: RelationForgeSettings) {
-        this.graph = graph;
-        this.settings = settings;
+    constructor(forge: Forge) {
+        this.graph = forge.graph;
+        this.settings = forge.settings;
     }
 
     /**

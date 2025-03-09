@@ -13,6 +13,7 @@ import {
     newRange,
     type RelationForgeSettings
 } from "src/internal";
+import type { Forge } from "./Forge";
 
 // Parse Dataview page into structured data
 export class ElementsParser {
@@ -76,10 +77,10 @@ export class ElementsParser {
     }
 
     // Generic parse method
-    public static parseFromPath(app: App, path: string, settings: RelationForgeSettings): IElement | undefined {
-        const page = new DataviewAdapter(app).page(path);
+    public static parseFromPath(forge: Forge, path: string): IElement | undefined {
+        const page = new DataviewAdapter(forge.app).page(path);
         if (!page) return;
-        return ElementsParser.parse(page, settings);
+        return ElementsParser.parse(page, forge.settings);
     }
 
     public static parse(page: Record<string, any>, settings: RelationForgeSettings, type?: ElementType): IElement | undefined {

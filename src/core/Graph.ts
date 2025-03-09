@@ -2,7 +2,7 @@ import Graphology from 'graphology';
 import betweennessCentrality from 'graphology-metrics/centrality/betweenness';
 import pagerank from 'graphology-metrics/centrality/pagerank';
 import type { Attributes } from 'graphology-types';
-import { App } from 'obsidian';
+import { App, Component } from 'obsidian';
 import {
     Character,
     DataviewAdapter,
@@ -13,27 +13,36 @@ import {
     type ElementType,
     type IElement,
     type IRelation,
-    type RelationForgeSettings
 } from 'src/internal';
+import type { Forge } from './Forge';
 
 
-export class Graph {
-    app: App;
-    core: Graphology;
-    dv: DataviewAdapter;
-    centralityScores?: any;
-    pagerankScores?: any;
+export class Graph extends Component {
+    #forge: Forge;
+    #dv: DataviewAdapter;
+    #centralityScores?: any;
+    #pagerankScores?: any;
+    #core?: Graphology;
 
-    constructor(app: App, settings: RelationForgeSettings) {
-        this.app = app;
-        this.core = GraphologyBuilder.build(app, settings);
-        this.dv = new DataviewAdapter(app);
+    constructor(forge: Forge) {
+        super();
+        this.#forge = forge;
+        this.#dv = new DataviewAdapter(this.#forge.app);
+    }
 
-        try { this.centralityScores = betweennessCentrality(this.core); }
-        catch { this.centralityScores = undefined; }
+    override onload(): void {
+        this.#core = GraphologyBuilder.build(this.#forge);
 
-        try { this.pagerankScores = pagerank(this.core); }
-        catch { this.pagerankScores = undefined; }
+        try { this.#centralityScores = betweennessCentrality(this.#core); }
+        catch { this.#centralityScores = undefined; }
+
+        try { this.#pagerankScores = pagerank(this.#core); }
+        catch { this.#pagerankScores = undefined; }
+    }
+
+    get core(): Graphology {
+        if (!this.#core) throw new Error("Core graph not loaded.");
+        return this.#core;
     }
 
     // ================================ EDGES =============================== //
@@ -170,5 +179,11 @@ export class Graph {
     getPlace(path: string): Place | undefined {
         const element = this.getElement(path);
         return element?.getType() === 'place' ? element as Place : undefined;
+    }
+
+    // =============================== METRICS ============================== //
+
+    getCentrality(id: string): number {
+        return this.#centralityScores[id] || 0;
     }
 }

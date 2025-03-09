@@ -10,10 +10,11 @@ import {
 	type RelationForgeSettings,
 	RelationForgeSettingTab
 } from './internal';
+import { Forge } from './core/Forge';
 
 export default class RelationForgePlugin extends Plugin {
 	settings: RelationForgeSettings = DEFAULT_SETTINGS;
-	initialized: boolean = false;
+	forge: Forge | null = null;
 
 	async onload() {
 		await this.loadSettings();
@@ -37,17 +38,8 @@ export default class RelationForgePlugin extends Plugin {
 	}
 
 	private init() {
-		if (this.initialized) return;
-		// Register ranges
-		for (const [type, config] of Object.entries(this.settings.ranges)) {
-			RangeRegistry.register(type as RelationAttribute, config);
-		}
-
-		const graph = new Graph(this.app, this.settings);
-		const algorithms = new Algorithms(graph, this.settings);
-		const processor = new MarkdownCodeBlockProcessor(this.app, this.settings, algorithms);
-		this.registerMarkdownCodeBlockProcessor('relation-forge', (source, el, ctx) => processor.handleRelationForgeBlock(source, el, ctx));
-		this.initialized = true;
+		if (this.forge) return;
+		this.forge = new Forge(this);
 	}
 
 	onunload() {

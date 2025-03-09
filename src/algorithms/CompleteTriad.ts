@@ -1,3 +1,4 @@
+import type { Forge } from "src/core/Forge";
 import {
     assignDefined,
     BalanceTheory,
@@ -18,9 +19,9 @@ export class CompleteTriad implements IAlgorithm {
     private graph: Graph;
     private settings: RelationForgeSettings;
 
-    constructor(graph: Graph, settings: RelationForgeSettings) {
-        this.graph = graph;
-        this.settings = settings;
+    constructor(forge: Forge) {
+        this.graph = forge.graph;
+        this.settings = forge.settings;
     }
 
 
