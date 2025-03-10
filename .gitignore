@@ -32,3 +32,7 @@ exampleVault/.obsidian/*
 exampleVault/.obsidian/plugins/*
 exampleVault/.obsidian/plugins/relation-forge/*
 !exampleVault/.obsidian/plugins/relation-forge/.hotreload
+
+
+.obsidian
+meta.txt
