@@ -1,6 +1,6 @@
 import Graphology from 'graphology';
 import { App, TFile } from 'obsidian';
-import { ElementsParser } from 'src/internal';
+import { ElementsParser, shouldAddFileForExtension } from 'src/internal';
 import { getAPI as getDV } from 'obsidian-dataview';
 import type { Forge } from './Forge';
 
@@ -46,13 +46,8 @@ export class GraphologyBuilder {
 
 	private static shouldAddFile(file: TFile | null): boolean {
 		const extension = this.extension(file);
-		return this.shouldAddFileForExtension(extension);
+		return shouldAddFileForExtension(extension);
 	}
-
-	static shouldAddFileForExtension(extension: string): boolean {
-		return extension === 'md';
-	}
-
 	private static extension(file: TFile | null): string {
 		return file?.extension ?? '';
 	}
@@ -64,6 +59,6 @@ export class GraphologyBuilder {
 	}
 
 	static shouldAddLinkForExtensions(sourceExtension: string, targetExtension: string): boolean {
-		return this.shouldAddFileForExtension(sourceExtension) && this.shouldAddFileForExtension(targetExtension);
+		return shouldAddFileForExtension(sourceExtension) && shouldAddFileForExtension(targetExtension);
 	}
 }
