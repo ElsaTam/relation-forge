@@ -1,13 +1,15 @@
-import { AnalysisThresholds, AnalysisWeights, DEFAULT_RANGES, type RangeConfiguration, type RelationAttribute } from "src/internal";
+import { AnalysisThresholds, AnalysisWeights, DEFAULT_RANGES, PropertyDescriptions, type ElementType, type PropertyMap, type PropertyTypes, type RangeConfiguration, type RelationAttribute } from "src/internal";
 
 export interface RelationForgeSettings {
     weights: AnalysisWeights;
     thresholds: AnalysisThresholds;
-    ranges: Record<RelationAttribute, RangeConfiguration>;
+    rangeProperties: Record<RelationAttribute, RangeConfiguration>;
+    properties: PropertyMap;
 }
 
 export const DEFAULT_SETTINGS: RelationForgeSettings = {
     weights: new AnalysisWeights(),
     thresholds: new AnalysisThresholds(),
-    ranges: DEFAULT_RANGES,
+    rangeProperties: DEFAULT_RANGES,
+    properties: PropertyDescriptions.propertyMap,
 }

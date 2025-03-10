@@ -1,5 +1,5 @@
 import { App, Modal, Setting } from "obsidian";
-import { camelCaseToSentence, DEFAULT_RANGES, PropertyDescriptions, type RangeConfiguration, type RelationAttribute, type RelationForgeSettings } from "src/internal";
+import { camelCaseToSentence, DEFAULT_RANGES, PropertyDescriptions, type ElementType, type PropertyMap, type PropertyTypes, type RangeConfiguration, type RelationAttribute, type RelationForgeSettings } from "src/internal";
 import type RelationForgePlugin from "src/main";
 
 export class RangeConfigsModal extends Modal {
@@ -26,69 +26,73 @@ export class RangeConfigsModal extends Modal {
             .setName("Relations")
             .setHeading();
 
-        this.addRange("affinity", PropertyDescriptions.relations.affinity, this.#settings.ranges.affinity);
-        this.addRange("frequency", PropertyDescriptions.relations.frequency, this.#settings.ranges.frequency);
-        this.addRange("impact", PropertyDescriptions.relations.impact, this.#settings.ranges.impact);
-        this.addRange("influence", PropertyDescriptions.relations.influence, this.#settings.ranges.influence);
-        this.addRange("trust", PropertyDescriptions.relations.trust, this.#settings.ranges.trust);
+        this.addRange("relation", "affinity", this.#settings.rangeProperties.affinity);
+        this.addRange("relation", "frequency", this.#settings.rangeProperties.frequency);
+        this.addRange("relation", "impact", this.#settings.rangeProperties.impact);
+        this.addRange("relation", "influence", this.#settings.rangeProperties.influence);
+        this.addRange("relation", "trust", this.#settings.rangeProperties.trust);
 
         new Setting(this.contentEl)
             .setName("Places")
             .setHeading();
 
-        this.addRange("placeImportance", PropertyDescriptions.places.importance, this.#settings.ranges.placeImportance);
+        this.addRange("place", "placeImportance", this.#settings.rangeProperties.placeImportance);
 
         new Setting(this.contentEl)
             .setName("Events")
             .setHeading();
 
-        this.addRange("eventImportance", PropertyDescriptions.events.importance, this.#settings.ranges.eventImportance);
+        this.addRange("event", "eventImportance", this.#settings.rangeProperties.eventImportance);
 
         new Setting(this.contentEl)
             .setName("Factions")
             .setHeading();
 
-        this.addRange("power", PropertyDescriptions.factions.power, this.#settings.ranges.power);
+        this.addRange("faction", "power", this.#settings.rangeProperties.power);
     }
 
-    private addRange(type: RelationAttribute, description: string, config: RangeConfiguration) {
-        this.#inputs[type] = {};
+    private addRange<T extends ElementType>(element: T, property: PropertyTypes<T>, config: RangeConfiguration) {
+        this.#inputs[element] = {};
 
         new Setting(this.contentEl)
-            .setName(camelCaseToSentence(type))
-            .setDesc(description)
-            .addExtraButton(cb => {
-                cb.setIcon('rotate-ccw');
-                cb.onClick(() => {
-                    this.#settings.ranges[type] = DEFAULT_RANGES[type];
-                    for (const [key, input] of Object.entries(this.#inputs[type])) {
-                        input.value = this.#settings.ranges[type][key as 'property' | 'min' | 'max' | 'default'].toString();
-                    }
-                    this.#plugin.saveSettings();
-                })
-            });
+            .setName(camelCaseToSentence(element))
+            .setDesc(PropertyDescriptions[element][property] as string);
 
         const div = this.contentEl.createDiv({ cls: "range-settings" });
 
         for (const [key, value] of Object.entries(config)) {
             new Setting(div)
-                .setName(key)
+                .setName(camelCaseToSentence(key))
                 .addText(cb => {
-                    this.#inputs[type][key] = cb.inputEl;
+                    this.#inputs[element][key] = cb.inputEl;
                     cb.setValue(value.toString());
-                    cb.onChange((value) => {
+                    cb.onChange((v) => {
                         if (key === 'property') {
-                            this.#settings.ranges[type][key] = value;
+                            this.#settings.properties[element][property] = v as PropertyMap[T][keyof (typeof PropertyDescriptions)[T]];
+                            this.#plugin.saveSettings();
                         }
                         else if (key === 'min' || key === 'max' || key === 'default') {
                             try {
-                                this.#settings.ranges[type][key] = parseInt(value);
+                                this.#settings.rangeProperties[property as RelationAttribute][key] = parseInt(v);
                                 this.#plugin.saveSettings();
                             }
                             catch {
 
                             }
                         }
+                    })
+                })
+                .addExtraButton(cb => {
+                    cb.setIcon('rotate-ccw');
+                    cb.onClick(() => {
+                        if (key === 'property') {
+                            this.#settings.properties[element][property] = property.toString() as PropertyMap[T][keyof (typeof PropertyDescriptions)[T]];
+                        }
+                        else if (key === 'min' || key === 'max' || key === 'default') {
+                            this.#settings.rangeProperties[property as RelationAttribute][key] = DEFAULT_RANGES[property as RelationAttribute][key];
+                        }
+                        this.#plugin.saveSettings();
+                        this.#inputs[element][key.toString()].value = key.toString();
                     })
                 });
         }

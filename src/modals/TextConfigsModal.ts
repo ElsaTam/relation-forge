@@ -1,15 +1,16 @@
 import { App, Modal, Setting } from "obsidian";
-import { DEFAULT_RANGES, type RelationAttribute, type RelationForgeSettings } from "src/internal";
+import { camelCaseToSentence, DEFAULT_RANGES, PropertyDescriptions, type ElementType, type PropertyMap, type PropertyTypes, type RelationAttribute, type RelationForgeSettings } from "src/internal";
 import type RelationForgePlugin from "src/main";
 
 export class TextConfigsModal extends Modal {
-    plugin: RelationForgePlugin;
-    settings: RelationForgeSettings;
+    #plugin: RelationForgePlugin;
+    #settings: RelationForgeSettings;
+    #inputs: Record<string, Record<string, HTMLInputElement>> = {};
 
     constructor(app: App, plugin: RelationForgePlugin, settings: RelationForgeSettings) {
         super(app);
-        this.plugin = plugin;
-        this.settings = settings;
+        this.#plugin = plugin;
+        this.#settings = settings;
         this.setTitle("Text properties");
         this.modalEl.addClass("forge-modal");
     }
@@ -20,53 +21,65 @@ export class TextConfigsModal extends Modal {
         new Setting(this.contentEl)
             .setDesc("Restart Obsidian after any change.");
 
-        const inputs: Record<string, Record<string, HTMLInputElement>> = {};
 
-        for (let [type, config] of Object.entries(this.settings.ranges)) {
+        new Setting(this.contentEl)
+            .setName("Characters")
+            .setHeading();
 
-            const _type = type as RelationAttribute;
-            inputs[_type] = {};
+        this.addProperty('character', 'description');
+        this.addProperty('character', 'status');
 
-            this.contentEl.createEl("hr");
+        new Setting(this.contentEl)
+            .setName("Events")
+            .setHeading();
 
-            new Setting(this.contentEl)
-                .setName(type)
-                .setHeading()
-                .addExtraButton(cb => {
-                    cb.setIcon('rotate-ccw');
-                    cb.onClick(() => {
-                        this.settings.ranges[_type] = DEFAULT_RANGES[_type];
-                        for (const [key, input] of Object.entries(inputs[type])) {
-                            input.value = this.settings.ranges[_type][key as 'property' | 'min' | 'max' | 'default'].toString();
-                        }
-                        this.plugin.saveSettings();
-                    })
-                });
+        this.addProperty('event', 'description');
+        this.addProperty('event', 'eventImportance');
 
-            const div = this.contentEl.createDiv({ cls: "range-settings" });
+        new Setting(this.contentEl)
+            .setName("Factions")
+            .setHeading();
 
-            for (const [key, value] of Object.entries(config)) {
-                new Setting(div)
-                    .setName(key)
-                    .addText(cb => {
-                        inputs[_type][key] = cb.inputEl;
-                        cb.setValue(value.toString());
-                        cb.onChange((value) => {
-                            if (key === 'property') {
-                                this.settings.ranges[_type][key] = value;
-                            }
-                            else if (key === 'min' || key === 'max' || key === 'default') {
-                                try {
-                                    this.settings.ranges[_type][key] = parseInt(value);
-                                    this.plugin.saveSettings();
-                                }
-                                catch {
+        this.addProperty('faction', 'description');
 
-                                }
-                            }
-                        })
-                    });
-            }
-        }
+        new Setting(this.contentEl)
+            .setName("Places")
+            .setHeading();
+
+        this.addProperty('place', 'description');
+        this.addProperty('place', 'placeImportance');
+
+        new Setting(this.contentEl)
+            .setName("Relations")
+            .setHeading();
+
+        this.addProperty('relation', 'type');
+        this.addProperty('relation', 'origin');
+        this.addProperty('relation', 'role');
+    }
+
+    addProperty<T extends ElementType>(element: T, property: PropertyTypes<T>) {
+        new Setting(this.contentEl)
+            .setName(camelCaseToSentence(property.toString()))
+            .setDesc(PropertyDescriptions[element][property] as string)
+            .addText(cb => {
+                if (!this.#inputs[element]) {
+                    this.#inputs[element] = {};
+                }
+                this.#inputs[element][property.toString()] = cb.inputEl;
+                cb.setValue(this.#settings.properties[element][property]);
+                cb.onChange((value) => {
+                    this.#settings.properties[element][property] = value as PropertyMap[T][keyof (typeof PropertyDescriptions)[T]];
+                    this.#plugin.saveSettings();
+                })
+            })
+            .addExtraButton(cb => {
+                cb.setIcon('rotate-ccw');
+                cb.onClick(() => {
+                    this.#settings.properties[element][property] = property.toString() as PropertyMap[T][keyof (typeof PropertyDescriptions)[T]];
+                    this.#plugin.saveSettings();
+                    this.#inputs[element][property.toString()].value = property.toString();
+                })
+            })
     }
 }

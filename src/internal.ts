@@ -3,7 +3,6 @@ export * from './constants/RangeConfigs';
 
 export * from './core/NumberRange';
 
-export * from './types/ElementType';
 export * from './types/InfluenceModelType';
 export * from './types/RelationType';
 export * from './types/StatusType';

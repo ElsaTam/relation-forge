@@ -28,20 +28,20 @@ export class Event implements IElement {
 
         const event = new Event(id, name);
 
-        if (typeof page.description === 'string') {
-            event.description = page.description
+        if (typeof page[settings.properties.event.description] === 'string') {
+            event.description = page[settings.properties.event.description];
         }
-        if (page.hasOwnProperty('startDate')) {
-            event.startDate = page.startDate
+        if (page.hasOwnProperty(page[settings.properties.event.startDate])) {
+            event.startDate = page[settings.properties.event.startDate];
         }
-        if (page.hasOwnProperty('endDate')) {
-            event.endDate = page.endDate
+        if (page.hasOwnProperty(page[settings.properties.event.endDate])) {
+            event.endDate = page[settings.properties.event.endDate];
         }
-        if (typeof page[settings.ranges['eventImportance'].property] === 'string') {
-            event.importance = newRange('eventImportance', page[settings.ranges['eventImportance'].property]);
+        if (typeof page[settings.properties.event.eventImportance] === 'string') {
+            event.importance = newRange('eventImportance', page[settings.properties.event.eventImportance]);
         }
 
-        event.relations = ElementsParser.parseRelations(page, settings);
+        event.relations = Relation.fromPage(page, settings);
 
         return event;
     }

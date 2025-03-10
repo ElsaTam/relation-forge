@@ -24,14 +24,14 @@ export class Place implements IElement {
 
         const place = new Place(id, name);
 
-        if (typeof page.description === 'string') {
-            place.description = page.description
+        if (typeof page[settings.properties.place.description] === 'string') {
+            place.description = page[settings.properties.place.description];
         }
-        if (typeof page[settings.ranges['placeImportance'].property] === 'string') {
-            place.importance = newRange('placeImportance', page[settings.ranges['placeImportance'].property]);
+        if (typeof page[settings.properties.place.placeImportance] === 'string') {
+            place.importance = newRange('placeImportance', page[settings.properties.place.placeImportance]);
         }
 
-        place.relations = ElementsParser.parseRelations(page, settings);
+        place.relations = Relation.fromPage(page, settings);
 
         return place;
     }

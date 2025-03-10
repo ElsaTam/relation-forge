@@ -23,14 +23,14 @@ export class Character implements IElement {
 
         const character = new Character(id, name);
 
-        if (typeof page.description === 'string') {
-            character.description = page.description
+        if (typeof page[settings.properties.character.description] === 'string') {
+            character.description = page[settings.properties.character.description];
         }
-        if (typeof page.status === 'string') {
-            character.status = page.status
+        if (typeof page[settings.properties.character.status] === 'string') {
+            character.status = page[settings.properties.character.status];
         }
 
-        character.relations = ElementsParser.parseRelations(page, settings);
+        character.relations = Relation.fromPage(page, settings);
 
         return character;
     }

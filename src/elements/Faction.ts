@@ -24,14 +24,14 @@ export class Faction implements IElement {
 
         const faction = new Faction(id, name);
 
-        if (typeof page.description === 'string') {
-            faction.description = page.description
+        if (typeof page[settings.properties.faction.description] === 'string') {
+            faction.description = page[settings.properties.faction.description];
         }
-        if (typeof page[settings.ranges['power'].property] === 'number') {
-            faction.power = newRange('power', page[settings.ranges['power'].property]);
+        if (typeof page[settings.properties.faction.power] === 'number') {
+            faction.power = newRange('power', page[settings.properties.faction.power]);
         }
 
-        faction.relations = ElementsParser.parseRelations(page, settings);
+        faction.relations = Relation.fromPage(page, settings);
 
         return faction;
     }

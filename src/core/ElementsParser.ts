@@ -26,56 +26,6 @@ export class ElementsParser {
         return;
     }
 
-    public static parseRelations(page: any, settings: RelationForgeSettings, types: RelationType[] = RELATION_TYPES): Relation[] {
-        const relations: Relation[] = [];
-
-        let reg = '^(';
-        for (let i = 0, n = types.length; i < n; ++i) {
-            reg += types[i];
-            if (i < types.length - 1) reg += '|';
-        }
-        reg += ')_\\d+$';
-        const relationRegex = new RegExp(reg);
-
-        for (const key in page) {
-            if (relationRegex.test(key)) {
-                if (!page[key].hasOwnProperty('path')) continue;
-
-                const target: string = page[key].path;
-                const index = new RegExp('\\d+$').exec(key);
-
-                let label: RelationType | undefined;
-                for (const type of types) {
-                    if (key.startsWith(type)) {
-                        label = type;
-                        break;
-                    }
-                }
-
-                if (!label) continue;
-
-                let relation: Relation = new Relation({
-                    source: page.file.path,
-                    target: target,
-                    label: label,
-                    type: DataviewAdapter.getStringProperty(page, `${label}_${index}_type`),
-                    influence: newRange('influence', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.ranges['influence'].property}`)),
-                    frequency: newRange('frequency', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.ranges['frequency'].property}`)),
-                    origin: DataviewAdapter.getStringProperty(page, `${label}_${index}_origin`),
-                    affinity: newRange('affinity', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.ranges['affinity'].property}`)),
-                    trust: newRange('trust', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.ranges['trust'].property}`)),
-                    role: DataviewAdapter.getStringProperty(page, `${label}_${index}_role`),
-                    impact: newRange('impact', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.ranges['impact'].property}`)),
-                    consequence: DataviewAdapter.getStringProperty(page, `${label}_${index}_consequence`),
-                });
-
-                relations.push(relation);
-            }
-        }
-
-        return relations;
-    }
-
     // Generic parse method
     public static parseFromPath(forge: Forge, path: string): IElement | undefined {
         const page = new DataviewAdapter(forge.app).page(path);

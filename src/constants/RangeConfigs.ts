@@ -1,17 +1,17 @@
 export const DEFAULT_RANGES = {
     // Relations
-    'affinity': { min: -10, max: 10, default: 0, property: 'affinity' },
-    'frequency': { min: 0, max: 10, default: 0, property: 'frequency' },
-    'impact': { min: -10, max: 10, default: 0, property: 'impact' },
-    'influence': { min: -10, max: 10, default: 0, property: 'influence' },
-    'trust': { min: -10, max: 10, default: 0, property: 'trust' },
+    'affinity': { min: -10, max: 10, default: 0 },
+    'frequency': { min: 0, max: 10, default: 0 },
+    'impact': { min: -10, max: 10, default: 0 },
+    'influence': { min: -10, max: 10, default: 0 },
+    'trust': { min: -10, max: 10, default: 0 },
 
     // Places and Events
-    'placeImportance': { min: 0, max: 10, default: 0, property: 'importance' },
-    'eventImportance': { min: 0, max: 10, default: 0, property: 'importance' },
+    'placeImportance': { min: 0, max: 10, default: 0 },
+    'eventImportance': { min: 0, max: 10, default: 0 },
 
     // Factions
-    'power': { min: 0, max: 10, default: 0, property: 'power' },
+    'power': { min: 0, max: 10, default: 0 },
 };
 
 export type RelationAttribute = keyof typeof DEFAULT_RANGES;
@@ -22,7 +22,6 @@ export interface RangeConfiguration {
     min: number;
     max: number;
     default: number;
-    property: string;
 }
 
 // Maintain a registry of range configurations
@@ -35,7 +34,6 @@ export class RangeRegistry {
             min: config.min,
             max: config.max,
             default: config.default,
-            property: config.property
         };
     }
 

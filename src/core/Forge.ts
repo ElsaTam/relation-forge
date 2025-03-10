@@ -22,7 +22,7 @@ export class Forge extends Component {
 
         this.addChild(this.#graph);
 
-        for (const [type, config] of Object.entries(this.#settings.ranges)) {
+        for (const [type, config] of Object.entries(this.#settings.rangeProperties)) {
             RangeRegistry.register(type as RelationAttribute, config);
         }
 
