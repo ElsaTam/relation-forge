@@ -1,15 +1,15 @@
 import Graphology from 'graphology';
-import { App, TFile } from 'obsidian';
-import { ElementsParser, shouldAddFileForExtension } from 'src/internal';
-import { getAPI as getDV } from 'obsidian-dataview';
+import { DataviewAdapter, ElementsParser, shouldAddFile, shouldAddLink } from 'src/internal';
 import type { Forge } from './Forge';
+
 
 export class GraphologyBuilder {
 	static build(forge: Forge): Graphology {
-		const dv = getDV(forge.app);
+		const dv = new DataviewAdapter(forge.app);
 		const graph = new Graphology();
 
-		const files = forge.app.vault.getFiles().filter(file => GraphologyBuilder.shouldAddFile(file));
+		const files = forge.obsidian.getFiles().filter(file => shouldAddFile(file));
+
 		for (const sourceFile of files) {
 			const sourcePage = dv.page(sourceFile.path);
 			const sourceElement = ElementsParser.parse(sourcePage, forge.settings);
@@ -25,6 +25,8 @@ export class GraphologyBuilder {
 			}
 
 			for (const relation of relations) {
+				if (!this.shouldAddLink(forge, relation.source, relation.target)) continue;
+
 				const targetElement = ElementsParser.parseFromPath(forge, relation.target);
 				if (!targetElement) continue;
 
@@ -44,21 +46,9 @@ export class GraphologyBuilder {
 		return graph;
 	}
 
-	private static shouldAddFile(file: TFile | null): boolean {
-		const extension = this.extension(file);
-		return shouldAddFileForExtension(extension);
-	}
-	private static extension(file: TFile | null): string {
-		return file?.extension ?? '';
-	}
-
-	private static shouldAddLink(app: App, source: string, target: string): boolean {
-		const sourceExtension = this.extension(app.vault.getFileByPath(source));
-		const targetExtension = this.extension(app.vault.getFileByPath(target));
-		return this.shouldAddLinkForExtensions(sourceExtension, targetExtension);
-	}
-
-	static shouldAddLinkForExtensions(sourceExtension: string, targetExtension: string): boolean {
-		return shouldAddFileForExtension(sourceExtension) && shouldAddFileForExtension(targetExtension);
+	private static shouldAddLink(forge: Forge, source: string, target: string): boolean {
+		const sourceFile = forge.obsidian.getFileByPath(source);
+		const targetFile = forge.obsidian.getFileByPath(target);
+		return shouldAddLink(sourceFile, targetFile);
 	}
 }

@@ -1,9 +1,11 @@
 import { Component, type App } from "obsidian";
 import { Algorithms, Graph, MarkdownCodeBlockProcessor, RangeRegistry, type RelationAttribute, type RelationForgeSettings } from "src/internal";
 import type RelationForgePlugin from "src/main";
+import { Obsidian } from "./Obsidian";
 
 export class Forge extends Component {
     #app: App;
+    #obsidian: Obsidian;
     #settings: RelationForgeSettings;
     #plugin: RelationForgePlugin;
     #graph: Graph;
@@ -16,6 +18,7 @@ export class Forge extends Component {
         this.#plugin = plugin;
         this.#settings = plugin.settings;
         this.#app = plugin.app;
+        this.#obsidian = new Obsidian(this.#app);
         this.#graph = new Graph(this);
         this.#algorithms = new Algorithms(this);
         this.#processor = new MarkdownCodeBlockProcessor(this);
@@ -35,6 +38,7 @@ export class Forge extends Component {
     }
 
     get app(): App { return this.#app; }
+    get obsidian(): Obsidian { return this.#obsidian; }
     get settings(): RelationForgeSettings { return this.#settings; }
     get plugin(): RelationForgePlugin { return this.#plugin; }
     get graph(): Graph { return this.#graph; }
