@@ -3,7 +3,7 @@ import type { ElementType } from '../../src/constants/PropertyDescriptions';
 import { addElement, shouldAddFile } from '../../src/core/coreHelpers';
 import { OBSTFile } from '../../src/core/Obsidian';
 
-type Attributes = {[name: string]: any};
+type Attributes = Record<string, any>;
 
 class Graphology {
 	ids: string[] = [];
