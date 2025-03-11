@@ -2,7 +2,7 @@ import type { Forge } from './Forge';
 import Graphology from 'graphology';
 import { DataviewAdapter } from '../utils/DataviewAdapter';
 import { ElementsParser } from './ElementsParser';
-import { addElement, shouldAddFile, shouldAddLink } from './coreHelpers';
+import { addElement, shouldAddFile } from './coreHelpers';
 
 export class GraphologyBuilder {
 	static build(forge: Forge): Graphology {
