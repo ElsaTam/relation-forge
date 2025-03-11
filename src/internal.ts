@@ -37,7 +37,6 @@ export * from './utils/ScoreCard';
 
 export * from './settings/RelationForgeSettings';
 
-export * from './core/GraphologyBuilder';
 export * from './core/Graph';
 
 export * from './algorithms/helpers/InfluenceCalculator';
@@ -59,3 +58,7 @@ export * from './processing/MarkdownCodeBlockProcessor';
 
 export * from './modals/RangeConfigsModal';
 export * from './settings/SettingTab/RelationForgeSettingTab';
+export { GraphologyBuilder } from './core/GraphologyBuilder';
+export { addElement } from './core/coreHelpers';
+export { shouldAddLink } from './core/coreHelpers';
+export { shouldAddFile } from './core/coreHelpers';

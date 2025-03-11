@@ -32,7 +32,7 @@ export class DataviewAdapter {
         return getAPI(app).index.initialized;
     }
 
-    page(path: string) {
+    page(path: string): Record<string, any> {
         return this.dv.page(path);
     }
 
