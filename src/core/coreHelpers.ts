@@ -7,10 +7,6 @@ export function shouldAddFile(file: OBSTFile | null): boolean {
 	return extension === 'md';
 }
 
-export function shouldAddLink(sourceFile: OBSTFile | null, targetFile: OBSTFile | null): boolean {
-	return shouldAddFile(sourceFile) && shouldAddFile(targetFile);
-}
-
 export function addElement(graph: Pick<Graphology, 'hasNode' | 'addNode'>, element: IElement): void {
 	if (!graph.hasNode(element.id)) {
 		graph.addNode(element.id, {

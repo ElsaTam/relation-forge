@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import type { ElementType } from '../../src/constants/PropertyDescriptions';
-import { addElement, shouldAddFile, shouldAddLink } from '../../src/core/coreHelpers';
+import { addElement, shouldAddFile } from '../../src/core/coreHelpers';
 import { OBSTFile } from '../../src/core/Obsidian';
 
 type Attributes = {[name: string]: any};
@@ -18,7 +18,7 @@ class Graphology {
 	}
 }
 
-describe('Supporting file extensions for the graph', () => {
+describe('Build the graph correctly', () => {
 	test('Should support md files', () => {
 		const file: OBSTFile = new OBSTFile({
 			basename: "",
@@ -39,36 +39,6 @@ describe('Supporting file extensions for the graph', () => {
 		expect(shouldAddFile(file)).toBe(false);
 	});
 
-	test('Should support links between two md files', () => {
-		const file: OBSTFile = new OBSTFile({
-			basename: "",
-			extension: "md",
-			name: "",
-			path: ""
-		});
-		expect(shouldAddLink(file, file)).toBe(true);
-	});
-
-	test('Should not support link with a canvas file', () => {
-		const fileMD: OBSTFile = new OBSTFile({
-			basename: "",
-			extension: "md",
-			name: "",
-			path: ""
-		});
-		const fileCanvas: OBSTFile = new OBSTFile({
-			basename: "",
-			extension: "canvas",
-			name: "",
-			path: ""
-		});
-		expect(shouldAddLink(fileMD, fileCanvas)).toBe(false);
-		expect(shouldAddLink(fileCanvas, fileMD)).toBe(false);
-		expect(shouldAddLink(fileCanvas, fileCanvas)).toBe(false);
-	});
-});
-
-describe('Build the graph correctly', () => {
 	test('Should add each element only once', () => {
 		const element = {
 			"id": "element1",

@@ -22,7 +22,7 @@ export class GraphologyBuilder {
 			addElement(graph, sourceElement);
 
 			for (const relation of relations) {
-				if (!this.shouldAddLink(forge, relation.source, relation.target)) continue;
+				if (!shouldAddFile(forge.obsidian.getFileByPath(relation.target))) continue;
 
 				const targetElement = ElementsParser.parseFromPath(forge, relation.target);
 				if (!targetElement) continue;
@@ -36,11 +36,5 @@ export class GraphologyBuilder {
 		}
 
 		return graph;
-	}
-
-	private static shouldAddLink(forge: Forge, source: string, target: string): boolean {
-		const sourceFile = forge.obsidian.getFileByPath(source);
-		const targetFile = forge.obsidian.getFileByPath(target);
-		return shouldAddLink(sourceFile, targetFile);
 	}
 }
