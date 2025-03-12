@@ -2,6 +2,14 @@ import { App } from "obsidian";
 import { getAPI } from "obsidian-dataview";
 import { type IDVResult } from "src/internal";
 
+export type IPage = {
+    file: {
+        path: string;
+        name: string;
+    };
+    name: string;
+} & Record<string, string>;
+
 export class DataviewAdapter {
     dv: any;
 
@@ -32,7 +40,7 @@ export class DataviewAdapter {
         return getAPI(app).index.initialized;
     }
 
-    page(path: string): Record<string, any> {
+    page(path: string): IPage {
         return this.dv.page(path);
     }
 

@@ -6,12 +6,9 @@ import {
     Event,
     Faction,
     type IElement,
-    Relation,
     Place,
-    RELATION_TYPES,
-    type RelationType,
-    newRange,
-    type RelationForgeSettings
+    type RelationForgeSettings,
+    type IPage
 } from "src/internal";
 import type { Forge } from "./Forge";
 
@@ -33,7 +30,7 @@ export class ElementsParser {
         return ElementsParser.parse(page, forge.settings);
     }
 
-    public static parse(page: Record<string, any>, settings: RelationForgeSettings, type?: ElementType): IElement | undefined {
+    public static parse(page: IPage, settings: RelationForgeSettings, type?: ElementType): IElement | undefined {
         type = type ?? ElementsParser.findType(page);
         switch (type) {
             case 'character':

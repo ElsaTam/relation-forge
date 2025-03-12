@@ -1,8 +1,6 @@
 import type { Forge } from './Forge';
 import Graphology from 'graphology';
-import { DataviewAdapter } from '../utils/DataviewAdapter';
-import { ElementsParser } from './ElementsParser';
-import { addElement, shouldAddFile } from './coreHelpers';
+import { DataviewAdapter, ElementsParser, shouldAddFile, type IElement } from 'src/internal';
 
 export class GraphologyBuilder {
 	static build(forge: Forge): Graphology {
@@ -19,7 +17,7 @@ export class GraphologyBuilder {
 
 			const relations = sourceElement.relations;
 
-			addElement(graph, sourceElement);
+			this.addElement(graph, sourceElement);
 
 			for (const relation of relations) {
 				if (!shouldAddFile(forge.obsidian.getFileByPath(relation.target))) continue;
@@ -27,7 +25,7 @@ export class GraphologyBuilder {
 				const targetElement = ElementsParser.parseFromPath(forge, relation.target);
 				if (!targetElement) continue;
 
-				addElement(graph, targetElement);
+				this.addElement(graph, targetElement);
 
 				graph.addEdgeWithKey(`${sourceElement.id}->${targetElement.id}`, sourceElement.id, targetElement.id, {
 					relation: relation,
@@ -36,5 +34,14 @@ export class GraphologyBuilder {
 		}
 
 		return graph;
+	}
+
+	static addElement(graph: Pick<Graphology, 'hasNode' | 'addNode'>, element: IElement): void {
+		if (!graph.hasNode(element.id)) {
+			graph.addNode(element.id, {
+				type: element.getType(),
+				element: element,
+			});
+		}
 	}
 }

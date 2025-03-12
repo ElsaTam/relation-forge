@@ -1,19 +1,12 @@
 import {
-	type IElement,
-	Relation,
-	type StatusType,
-	type ElementType,
-	type RelationForgeSettings,
-	asStatusType
+    type IElement,
+    Relation,
+    type StatusType,
+    type ElementType,
+    type RelationForgeSettings,
+    asStatusType,
+    type IPage
 } from 'src/internal';
-
-export type ICharacterPage = {
-	file: {
-		path: string;
-		name: string;
-	};
-	name: string;
-} & Record<string, string>;
 
 export class Character implements IElement {
     id: string;
@@ -32,7 +25,7 @@ export class Character implements IElement {
         return 'character';
     }
 
-    public static fromPage(page: ICharacterPage, settings: RelationForgeSettings): Character {
+    public static fromPage(page: IPage, settings: RelationForgeSettings): Character {
         const id = page.file.path;
         const name = page.name ?? page.file.name;
 

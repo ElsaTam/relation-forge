@@ -32,7 +32,7 @@ export * from './core/ElementsParser';
 export * from './settings/AnalysisThresholds';
 export * from './settings/AnalysisWeights';
 
-export * from './utils/DataviewAdapter';
+export * from './core/DataviewAdapter';
 export * from './utils/ScoreCard';
 
 export * from './settings/RelationForgeSettings';
@@ -59,6 +59,4 @@ export * from './processing/MarkdownCodeBlockProcessor';
 export * from './modals/RangeConfigsModal';
 export * from './settings/SettingTab/RelationForgeSettingTab';
 export { GraphologyBuilder } from './core/GraphologyBuilder';
-export { addElement } from './core/coreHelpers';
-export { shouldAddLink } from './core/coreHelpers';
 export { shouldAddFile } from './core/coreHelpers';

@@ -1,7 +1,8 @@
 import { describe, test, expect } from 'bun:test';
 import type { ElementType } from '../../src/constants/PropertyDescriptions';
-import { addElement, shouldAddFile } from '../../src/core/coreHelpers';
+import { shouldAddFile } from '../../src/core/coreHelpers';
 import { OBSTFile } from '../../src/core/Obsidian';
+import { GraphologyBuilder } from 'src/core/GraphologyBuilder';
 
 type Attributes = Record<string, any>;
 
@@ -49,18 +50,18 @@ describe('Build the graph correctly', () => {
 		};
 		const graph = new Graphology();
 
-		addElement(graph, element);
+		GraphologyBuilder.addElement(graph, element);
 
 		expect(graph.ids.filter(node => node === element.id).length).toBe(1);
 		expect(graph.ids.length).toBe(1);
 
-		addElement(graph, element);
+		GraphologyBuilder.addElement(graph, element);
 
 		expect(graph.ids.filter(node => node === element.id).length).toBe(1);
 		expect(graph.ids.length).toBe(1);
 
 		element.id = "element2";
-		addElement(graph, element);
+		GraphologyBuilder.addElement(graph, element);
 
 		expect(graph.ids.filter(node => node === element.id).length).toBe(1);
 		expect(graph.ids.length).toBe(2);
