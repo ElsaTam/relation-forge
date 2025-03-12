@@ -179,13 +179,17 @@ describe('Verify that relations are parsed correctly', () => {
 		const page: IPage = PageBuilder.createFullyPopulatedPage();
 		delete page.character_1_influence;
 		expect(page.character_1_influence).toBeUndefined();
-		DEFAULT_SETTINGS.rangeProperties.influence.default = 7;
+		const newValue = 7;
+		// Guard against changes to the Influence Range
+		expect(newValue).toBeGreaterThanOrEqual(DEFAULT_SETTINGS.rangeProperties.influence.min);
+		expect(newValue).toBeLessThanOrEqual(DEFAULT_SETTINGS.rangeProperties.influence.max);
+		DEFAULT_SETTINGS.rangeProperties.influence.default = newValue;
 
 		// Act
 		const relations = Relation.fromPage(page, DEFAULT_SETTINGS);
 
 		// Assert
 		expect(relations.length).toBe(1);
-		expect(relations[0].influence.value).toBe(7);
+		expect(relations[0].influence.value).toBe(newValue);
 	});
 });
