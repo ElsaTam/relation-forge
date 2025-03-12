@@ -197,7 +197,7 @@ describe('Verify that relations are parsed correctly', () => {
 		]);
 	});
 
-	test('Should use the default value for numeric attributes that are non-existing', () => {
+	test('Should use the default values for numeric attributes that are non-existing', () => {
 		const page: IPage = {
 			file: {
 				path: "Path/to/source.md",
