@@ -1,8 +1,8 @@
-import type { Character, IRelation } from "src/internal";
+import type { Character, IRelation, IRelationAttributes } from 'src/internal';
 
 export interface ITriad {
     characters: [Character, Character, Character];
-    relationships: [Omit<IRelation, 'create'>, Omit<IRelation, 'create'>, Omit<IRelation, 'create'>];
+    relationships: [IRelationAttributes, IRelationAttributes, IRelationAttributes];
     isBalanced: boolean;
     score: number;  // How balanced (-1 to 1, with 1 being perfectly balanced)
     tension: number;       // How much tension exists in this triad (0-10)

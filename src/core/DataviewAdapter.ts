@@ -7,8 +7,8 @@ export type IPage = {
         path: string;
         name: string;
     };
-    name: string;
-} & Record<string, string>;
+    name?: string;
+} & Record<string, any>;
 
 export class DataviewAdapter {
     dv: any;

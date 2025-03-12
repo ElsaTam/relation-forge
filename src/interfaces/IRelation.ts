@@ -1,5 +1,6 @@
 import type { Forge } from "src/core/Forge";
 import { NumberRange, type RelationType } from "src/internal";
+import type { TFile } from 'obsidian';
 
 export interface IRelation {
     source: string;
@@ -19,4 +20,7 @@ export interface IRelation {
     consequence?: string;         // what is the consequence of the event on the character
 
     create: (forge: Forge) => Promise<void>;
+	saveInFrontMatter: (frontMatter: any, forge: Forge, file: TFile) => void;
 }
+
+export type IRelationAttributes = Omit<IRelation, 'create' | 'saveInFrontMatter'>;

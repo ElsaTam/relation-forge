@@ -14,7 +14,7 @@ import { Forge } from './core/Forge';
 
 export default class RelationForgePlugin extends Plugin {
 	settings: RelationForgeSettings = DEFAULT_SETTINGS;
-	forge: Forge = new Forge(this);;
+	forge: Forge = new Forge(this);
 
 	async onload() {
 		await this.loadSettings();
