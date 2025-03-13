@@ -1,3 +1,4 @@
 [test]
+coverageSkipTestFiles = true
 preload = ["./tests/svelte-loader.ts", "./tests/obsidianMock.ts"]
 root = "./tests"

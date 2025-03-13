@@ -4,51 +4,36 @@ import type { IPage } from '../../src/core/DataviewAdapter';
 import { DEFAULT_SETTINGS } from '../../src/settings/RelationForgeSettings';
 import { Relation } from '../../src/elements/Relation';
 import { PageBuilder } from '../testingUtils/PageBuilder';
+import type { IRelationAttributes } from '../../src/interfaces/IRelation';
 
 describe('Verify that characters are parsed correctly', () => {
 	test('Should create a character with the proper name (from the name property)', () => {
-		const page: IPage = {
-			file: {
-				path: '',
-				name: 'Note name',
-			},
-			name: 'Character 1',
-		};
+		const page: IPage = new PageBuilder()
+			.setName('Character 1')
+			.build();
 		const character = Character.fromPage(page, DEFAULT_SETTINGS);
 		expect(character.name).toEqual('Character 1');
 	});
 
 	test('Should create a character with the proper name (from the note name)', () => {
-		const page: IPage = {
-			file: {
-				path: '',
-				name: 'Note name',
-			},
-		};
+		const page: IPage = new PageBuilder()
+			.setFilename('Note name')
+			.build();
 		const character = Character.fromPage(page, DEFAULT_SETTINGS);
 		expect(character.name).toEqual('Note name');
 	});
 
 	test('Should create a character with the proper description and status', () => {
-		const page: IPage = {
-			file: {
-				path: '',
-				name: 'Note name',
-			},
-			description: 'Testing character',
-			status: 'dead',
-		};
+		const page: IPage = new PageBuilder()
+			.setDescription("Testing description")
+			.setStatus("dead")
+			.build();
 		const character = Character.fromPage(page, DEFAULT_SETTINGS);
-		expect([character.description, character.status]).toStrictEqual(['Testing character', 'dead']);
+		expect([character.description, character.status]).toStrictEqual(['Testing description', 'dead']);
 	});
 
 	test('Should create a character with empty optional attributes', () => {
-		const page: IPage = {
-			file: {
-				path: '',
-				name: 'Note name',
-			},
-		};
+		const page: IPage = new PageBuilder().build();
 		const character = Character.fromPage(page, DEFAULT_SETTINGS);
 		expect([character.description, character.status, character.relations]).toStrictEqual(['', '', []]);
 	});
@@ -56,17 +41,13 @@ describe('Verify that characters are parsed correctly', () => {
 
 describe('Verify that relations are parsed correctly', () => {
 	test('Should get the proper labels', () => {
-		const page: IPage = {
-			file: {
-				path: 'Path/to/source.md',
-				name: '',
-			},
-			character_1: { path: 'Related Character' },
-			place_1: { path: 'Related Place' },
-			event_1: { path: 'Related Event' },
-			faction_1: { path: 'Related Faction' },
-			unknown_1: { path: 'Invalid' },
-		};
+		const page = new PageBuilder()
+			.addRelationLink('character', 1, '')
+			.addRelationLink('place', 1, '')
+			.addRelationLink('event', 1, '')
+			.addRelationLink('faction', 1, '')
+			.addRelationLink('unknown', 1, '')
+			.build();
 
 		const relations = Relation.fromPage(page, DEFAULT_SETTINGS);
 		const labels = relations.map(relation => relation.label);
@@ -77,22 +58,17 @@ describe('Verify that relations are parsed correctly', () => {
 
 	test('Should properly create the regex for the types', () => {
 		const reg = Relation.getTypesRegex(['character', 'faction']);
-
 		expect(reg).toBe('^(character|faction)_\\d+$');
 	});
 
 	test('Should not get undesired labels', () => {
-		const page: IPage = {
-			file: {
-				path: 'Path/to/source.md',
-				name: '',
-			},
-			character_1: { path: 'Related Character' },
-			place_1: { path: 'Related Place' },
-			event_1: { path: 'Related Event' },
-			faction_1: { path: 'Related Faction' },
-			unknown_1: { path: 'Invalid' },
-		};
+		const page = new PageBuilder()
+			.addRelationLink('character', 1, '')
+			.addRelationLink('place', 1, '')
+			.addRelationLink('event', 1, '')
+			.addRelationLink('faction', 1, '')
+			.addRelationLink('unknown', 1, '')
+			.build();
 
 		const relations = Relation.fromPage(page, DEFAULT_SETTINGS, ['character', 'faction']);
 		const labels = relations.map(relation => relation.label);
@@ -101,95 +77,101 @@ describe('Verify that relations are parsed correctly', () => {
 		expect(labels).toStrictEqual(['character', 'faction']);
 	});
 
-	test('Should correctly parse all attributes from a relation', () => {
-		const page: IPage = {
-			file: {
-				path: 'Path/to/source.md',
-				name: '',
-			},
-			character_1: { path: 'Related Character' },
-			character_1_type: 'type of the relation',
-			character_1_influence: 7,
-			character_1_frequency: 4,
-			character_1_origin: 'origin of the relation',
-			character_1_affinity: 7,
-			character_1_trust: -2,
-			character_1_role: 'role in the relation',
-			character_1_impact: 6,
-			character_1_consequence: 'consequence of the relation',
-		};
-		const relations = Relation.fromPage(page, DEFAULT_SETTINGS);
-		expect(relations.length).toBe(1);
-
-		const relation = relations[0];
-		expect([
-			relation.source,
-			relation.target,
-			relation.label,
-			relation.type,
-			relation.influence.value,
-			relation.frequency?.value,
-			relation.origin,
-			relation.affinity?.value,
-			relation.trust?.value,
-			relation.role,
-			relation.impact?.value,
-			relation.consequence,
-		]).toStrictEqual([
-			page.file.path,
-			page.character_1.path,
-			'character',
-			page.character_1_type,
-			page.character_1_influence,
-			page.character_1_frequency,
-			page.character_1_origin,
-			page.character_1_affinity,
-			page.character_1_trust,
-			page.character_1_role,
-			page.character_1_impact,
-			page.character_1_consequence,
-		]);
-	});
-
-	test('Should set to undefined non-existing attributes that are non-numeric', () => {
-		const page: IPage = {
-			file: {
-				path: 'Path/to/source.md',
-				name: '',
-			},
-			character_1: { path: 'Related Character' },
-		};
-		const relations = Relation.fromPage(page, DEFAULT_SETTINGS);
-		expect(relations.length).toBe(1);
-
-		const relation = relations[0];
-		expect([relation.source, relation.target, relation.label, relation.type, relation.origin, relation.role, relation.consequence]).toStrictEqual([
-			page.file.path,
-			page.character_1.path,
-			'character',
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-		]);
-	});
-
-	test('Should use the default value for a non-existing numeric attribute', () => {
+	test.each([
+		['type', 'type of the relation'],
+		['influence', 7],
+		['frequency', 4],
+		['origin', 'origin of the relation'],
+		['affinity', 7],
+		['trust', -2],
+		['role', 'role in the relation'],
+		['impact', 6],
+		['consequence', 'consequence of the relation']
+	])('Should correctly parse attribute %p from a relation', (key, value) => {
 		// Arrange
-		const page: IPage = PageBuilder.createFullyPopulatedPage();
-		delete page.character_1_influence;
-		expect(page.character_1_influence).toBeUndefined();
-		const newValue = 7;
+		const typedKey = key as keyof IRelationAttributes;
+		const attributes: Record<string, string | number> = {};
+		attributes[key] = value;
+		const page = new PageBuilder()
+			.addRelationLink('character', 1, '')
+			.addRelationAttributes('character', 1, attributes)
+			.build();
 		// Guard against changes to the Influence Range
-		expect(newValue).toBeGreaterThanOrEqual(DEFAULT_SETTINGS.rangeProperties.influence.min);
-		expect(newValue).toBeLessThanOrEqual(DEFAULT_SETTINGS.rangeProperties.influence.max);
-		DEFAULT_SETTINGS.rangeProperties.influence.default = newValue;
+		if (typeof value === 'number') {
+			// @ts-ignore
+			expect(value).toBeGreaterThanOrEqual(DEFAULT_SETTINGS.rangeProperties[typedKey].min);
+			// @ts-ignore
+			expect(value).toBeLessThanOrEqual(DEFAULT_SETTINGS.rangeProperties[typedKey].max);
+		}
+
+		// Act
+		const relations = Relation.fromPage(page, DEFAULT_SETTINGS);
+		expect(relations.length).toBe(1);
+
+		// Assert
+		const relation = relations[0];
+		expect(relation).toContainKey(typedKey);
+		if (typeof value === 'number') {
+			expect(relation[typedKey]).toBeObject();
+			// @ts-ignore
+			expect(relation[typedKey].value).toBe(value);
+		}
+		else {
+			expect(relation[typedKey]).toBeString();
+			expect(relation[typedKey]).toBe(value);
+		}
+	});
+
+
+	test.each([
+		'type',
+		'origin',
+		'role',
+		'consequence'
+	])('Should set to undefined non-existing %p', (key) => {
+		// Arrange
+		const typedKey = key as keyof IRelationAttributes;
+		const page = new PageBuilder()
+			.addRelationLink('character', 1, '')
+			.build();
 
 		// Act
 		const relations = Relation.fromPage(page, DEFAULT_SETTINGS);
 
 		// Assert
 		expect(relations.length).toBe(1);
-		expect(relations[0].influence.value).toBe(newValue);
+		const relation = relations[0];
+		expect(relation).toContainKey(key);
+		expect(relation[typedKey]).toBeUndefined();
+	});
+
+	test.each([
+		['influence', 7],
+		['affinity', -3],
+		['frequency', 2],
+		['impact', 5],
+		['trust', -6]
+	])('Should use the default range value for %p', (key, newValue) => {
+		// Arrange
+		const typedKey = key as keyof IRelationAttributes;
+		const page: IPage = new PageBuilder()
+			.addRelationLink('character', 1, '')
+			.build();
+		expect(page[`character_1_${key}`]).toBeUndefined();
+		// Guard against changes to the Influence Range
+		// @ts-ignore
+		expect(newValue).toBeGreaterThanOrEqual(DEFAULT_SETTINGS.rangeProperties[typedKey].min);
+		// @ts-ignore
+		expect(newValue).toBeLessThanOrEqual(DEFAULT_SETTINGS.rangeProperties[typedKey].max);
+		// @ts-ignore
+		DEFAULT_SETTINGS.rangeProperties[typedKey].default = newValue;
+
+		// Act
+		const relations = Relation.fromPage(page, DEFAULT_SETTINGS);
+
+		// Assert
+		expect(relations.length).toBe(1);
+		// @ts-ignore
+		expect(relations[0][typedKey]?.value).toBe(newValue);
 	});
 });

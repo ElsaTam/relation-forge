@@ -4,7 +4,7 @@ import { shouldAddFile } from '../../src/core/coreHelpers';
 import { OBSTFile } from '../../src/core/Obsidian';
 import { GraphologyBuilder } from 'src/core/GraphologyBuilder';
 
-type Attributes = Record<string, any>;
+type Attributes = Record<string, string | number>;
 
 class Graphology {
 	ids: string[] = [];
@@ -48,22 +48,22 @@ describe('Build the graph correctly', () => {
 			"relations": [],
 			"description": "",
 		};
-		const graph = new Graphology();
+		const core = new Graphology();
 
-		GraphologyBuilder.addElement(graph, element);
+		GraphologyBuilder.addElement(core, element);
 
-		expect(graph.ids.filter(node => node === element.id).length).toBe(1);
-		expect(graph.ids.length).toBe(1);
+		expect(core.ids.filter(node => node === element.id).length).toBe(1);
+		expect(core.ids.length).toBe(1);
 
-		GraphologyBuilder.addElement(graph, element);
+		GraphologyBuilder.addElement(core, element);
 
-		expect(graph.ids.filter(node => node === element.id).length).toBe(1);
-		expect(graph.ids.length).toBe(1);
+		expect(core.ids.filter(node => node === element.id).length).toBe(1);
+		expect(core.ids.length).toBe(1);
 
 		element.id = "element2";
-		GraphologyBuilder.addElement(graph, element);
+		GraphologyBuilder.addElement(core, element);
 
-		expect(graph.ids.filter(node => node === element.id).length).toBe(1);
-		expect(graph.ids.length).toBe(2);
+		expect(core.ids.filter(node => node === element.id).length).toBe(1);
+		expect(core.ids.length).toBe(2);
 	});
 });
