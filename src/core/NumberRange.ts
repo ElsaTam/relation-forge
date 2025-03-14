@@ -1,15 +1,12 @@
-import { RangeRegistry, type RelationAttribute } from "src/internal";
+import { RangeRegistry, type RelationAttribute } from 'src/internal';
 
 
-export function newRange<T extends RelationAttribute>(
-    type: T,
-	rangeSettings: {min: number, max: number, default: number},
-    value?: number | NumberRange<RelationAttribute>
-): NumberRange<T> {
-    return new NumberRange<T>(
-        type,
-        typeof value === "number" ? value : value?.value ?? rangeSettings.default
-    );
+export function newRange<T extends RelationAttribute>(type: T, value?: number | NumberRange<RelationAttribute>): NumberRange<T> {
+	const config = RangeRegistry.getConfig(type);
+	if (!config) {
+		throw new Error(`Unknown range type: ${type}. Please register it first.`);
+	}
+	return new NumberRange<T>(type, typeof value === 'number' ? value : (value?.value ?? config.default));
 }
 
 export class NumberRange<T extends RelationAttribute> {

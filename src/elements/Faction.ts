@@ -19,7 +19,7 @@ export class Faction implements IElement {
     constructor(id: string, name: string, ranges: typeof DEFAULT_RANGES) {
         this.id = id;
         this.name = name;
-        this.power = newRange('power', ranges.power);
+        this.power = newRange('power');
     }
 
     public getType(): ElementType {
@@ -36,8 +36,8 @@ export class Faction implements IElement {
             faction.description = page[settings.properties.faction.description];
         }
         if (typeof page[settings.properties.faction.power] === 'number') {
-            faction.power = newRange('power', page[settings.properties.faction.power]);
-        }
+			faction.power = newRange('power');
+		}
 
         faction.relations = Relation.fromPage(page, settings);
 

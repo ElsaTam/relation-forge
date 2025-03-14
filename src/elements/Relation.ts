@@ -64,11 +64,11 @@ export class Relation implements IRelation {
 					type: DataviewAdapter.getStringProperty(page, `${label}_${index}_${settings.properties.relation.type}`),
 					influence: newRange('influence', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.properties.relation.influence}`)),
 					frequency: newRange('frequency', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.properties.relation.frequency}`)),
-					origin: DataviewAdapter.getStringProperty(page, `${label}_${index}_${settings.properties.relation.origin}`),
-					affinity: newRange('affinity', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.properties.relation.affinity}`)),
-					trust: newRange('trust', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.properties.relation.trust}`)),
-					role: DataviewAdapter.getStringProperty(page, `${label}_${index}_${settings.properties.relation.role}`),
-					impact: newRange('impact', DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.properties.relation.impact}`)),
+					affinity : newRange('affinity' , DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.properties.relation.affinity}`)),
+					trust    : newRange('trust'    , DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.properties.relation.trust}`)),
+					impact   : newRange('impact'   , DataviewAdapter.getNumberProperty(page, `${label}_${index}_${settings.properties.relation.impact}`)),
+					origin     : DataviewAdapter.getStringProperty(page, `${label}_${index}_${settings.properties.relation.origin}`),
+					role       : DataviewAdapter.getStringProperty(page, `${label}_${index}_${settings.properties.relation.role}`),
 					consequence: DataviewAdapter.getStringProperty(page, `${label}_${index}_${settings.properties.relation.consequence}`),
 				});
 

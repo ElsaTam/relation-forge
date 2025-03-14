@@ -23,7 +23,7 @@ export class Event implements IElement {
     constructor(id: string, name: string, ranges: typeof DEFAULT_RANGES) {
         this.id = id;
         this.name = name;
-        this.importance = newRange('eventImportance', ranges.eventImportance);
+        this.importance = newRange('eventImportance');
     }
 
     public getType(): ElementType {
@@ -46,7 +46,7 @@ export class Event implements IElement {
             event.endDate = page[settings.properties.event.endDate];
         }
         if (typeof page[settings.properties.event.eventImportance] === 'string') {
-            event.importance = newRange('eventImportance', page[settings.properties.event.eventImportance]);
+            event.importance = newRange('eventImportance');
         }
 
         event.relations = Relation.fromPage(page, settings);

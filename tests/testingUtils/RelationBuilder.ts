@@ -6,10 +6,10 @@ import type { TFile } from 'obsidian';
 import { DEFAULT_RANGES } from '../../src/constants/RangeConfigs';
 
 export class RelationBuilder {
-	private source: string = "";
-	private target: string = "";
-	private label: RelationType = "character";
-	private influence: NumberRange<'influence'> = newRange('influence', DEFAULT_RANGES.influence);
+	private source: string = '';
+	private target: string = '';
+	private label: RelationType = 'character';
+	private influence: NumberRange<'influence'> = newRange('influence');
 	private affinity?: NumberRange<'affinity'>;
 	private frequency?: NumberRange<'frequency'>;
 	private impact?: NumberRange<'impact'>;
@@ -25,8 +25,10 @@ export class RelationBuilder {
 			target: this.target,
 			label: this.label,
 			influence: this.influence,
-			create: (_: Forge): Promise<void> => { return new Promise<void>(() => {}); },
-			saveInFrontMatter(_1: any, _2: Forge, _3: TFile): void { },
+			create: (_: Forge): Promise<void> => {
+				return new Promise<void>(() => {});
+			},
+			saveInFrontMatter(_1: any, _2: Forge, _3: TFile): void {},
 			type: this.type,
 			consequence: this.consequence,
 			role: this.role,

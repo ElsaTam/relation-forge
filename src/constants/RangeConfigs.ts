@@ -26,16 +26,31 @@ export interface RangeConfiguration {
 
 // Maintain a registry of range configurations
 export class RangeRegistry {
-    private static configurations: Record<RelationAttribute, RangeConfiguration> = DEFAULT_RANGES;
+    private static configurations: Record<RelationAttribute, RangeConfiguration> = structuredClone(DEFAULT_RANGES);
 
     // Register a new range type
     static register(type: RelationAttribute, config: RangeConfiguration): void {
-        this.configurations[type] = {
+		if (!this.canRegister(config)) {
+			throw new Error(`Config with min = ${config.min}, max = ${config.max} and default = ${config.default} is not valid`);
+		}
+		this.configurations[type] = {
             min: config.min,
             max: config.max,
             default: config.default,
         };
     }
+
+	static registerAttribute(type: RelationAttribute, attr: keyof RangeConfiguration, value: number): void {
+		if (!this.hasType(type)) {
+			throw new Error(`Unknown range type: ${type}. Please register it first.`);
+		}
+		const config = structuredClone(this.configurations[type]);
+		config[attr] = value;
+		if (!this.canRegister(config)) {
+			throw new Error(`Config with min = ${config.min}, max = ${config.max} and default = ${config.default} is not valid`);
+		}
+		this.configurations[type][attr] = value;
+	}
 
     // Get a configuration
     static getConfig(type: RelationAttribute): RangeConfiguration | undefined {
@@ -46,4 +61,8 @@ export class RangeRegistry {
     static hasType(type: string): boolean {
         return type in this.configurations;
     }
+
+	static canRegister(config: RangeConfiguration): boolean {
+		return config.min <= config.max && config.default >= config.min && config.default <= config.max;
+	}
 }

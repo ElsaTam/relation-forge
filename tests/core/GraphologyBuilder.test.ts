@@ -75,11 +75,7 @@ describe('Build the graph correctly', () => {
 		const target: IElement = new ElementBuilder()
 			.setID(targetID)
 			.build();
-		const relation: Relation = new RelationBuilder()
-			.setSource(sourceID)
-			.setTarget(targetID)
-			.setImpact(newRange('impact', DEFAULT_RANGES.impact, 4))
-			.build();
+		const relation: Relation = new RelationBuilder().setSource(sourceID).setTarget(targetID).setImpact(newRange('impact', 4)).build();
 		const core = new Graphology();
 		const edgeID = GraphologyBuilder.getEdgeID(relation)
 

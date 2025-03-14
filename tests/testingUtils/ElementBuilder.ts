@@ -8,12 +8,12 @@ import { newRange, type NumberRange } from '../../src/core/NumberRange';
 import { DEFAULT_RANGES } from '../../src/constants/RangeConfigs';
 
 export class ElementBuilder {
-	private id: string = "";
-	private name: string = "";
+	private id: string = '';
+	private name: string = '';
 	private relations: IRelation[] = [];
-	private description: string = "";
-	private type: ElementType = "character";
-	private placeImportance: NumberRange<'placeImportance'> = newRange("placeImportance", DEFAULT_RANGES.placeImportance);
+	private description: string = '';
+	private type: ElementType = 'character';
+	private placeImportance: NumberRange<'placeImportance'> = newRange('placeImportance');
 
 	build(): IElement {
 		return {
@@ -26,18 +26,24 @@ export class ElementBuilder {
 	}
 
 	buildCharacter(): Character {
-		this.type = "character";
-		const status: StatusType = "";
-		return Object.assign({
-			status: status,
-		}, this.build());
+		this.type = 'character';
+		const status: StatusType = '';
+		return Object.assign(
+			{
+				status: status,
+			},
+			this.build(),
+		);
 	}
 
 	buildPlace(): Place {
-		this.type = "place";
-		return Object.assign({
-			importance: this.placeImportance,
-		}, this.build());
+		this.type = 'place';
+		return Object.assign(
+			{
+				importance: this.placeImportance,
+			},
+			this.build(),
+		);
 	}
 
 	setID(id: string): ElementBuilder {

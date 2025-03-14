@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { Character } from '../../src/elements/Character';
 import type { IPage } from '../../src/core/DataviewAdapter';
 import { DEFAULT_SETTINGS } from '../../src/settings/RelationForgeSettings';
+import { DEFAULT_RANGES, RangeRegistry } from '../../src/constants/RangeConfigs';
 import { Relation } from '../../src/elements/Relation';
 import { PageBuilder } from '../testingUtils/PageBuilder';
 import type { IRelationAttributes } from '../../src/interfaces/IRelation';
@@ -99,9 +100,9 @@ describe('Verify that relations are parsed correctly', () => {
 		// Guard against changes to the Influence Range
 		if (typeof value === 'number') {
 			// @ts-ignore
-			expect(value).toBeGreaterThanOrEqual(DEFAULT_SETTINGS.rangeProperties[typedKey].min);
+			expect(value).toBeGreaterThanOrEqual(DEFAULT_RANGES[typedKey].min);
 			// @ts-ignore
-			expect(value).toBeLessThanOrEqual(DEFAULT_SETTINGS.rangeProperties[typedKey].max);
+			expect(value).toBeLessThanOrEqual(DEFAULT_RANGES[typedKey].max);
 		}
 
 		// Act
@@ -152,8 +153,12 @@ describe('Verify that relations are parsed correctly', () => {
 		['impact', 5],
 		['trust', -6]
 	])('Should use the default range value for %p', (key, newValue) => {
-		// Arrange
+		// Set up
 		const typedKey = key as keyof IRelationAttributes;
+		// @ts-ignore
+		RangeRegistry.registerAttribute(typedKey, 'default', newValue);
+
+		// Arrange
 		const page: IPage = new PageBuilder()
 			.addRelationLink('character', 1, '')
 			.build();
@@ -163,8 +168,6 @@ describe('Verify that relations are parsed correctly', () => {
 		expect(newValue).toBeGreaterThanOrEqual(DEFAULT_SETTINGS.rangeProperties[typedKey].min);
 		// @ts-ignore
 		expect(newValue).toBeLessThanOrEqual(DEFAULT_SETTINGS.rangeProperties[typedKey].max);
-		// @ts-ignore
-		DEFAULT_SETTINGS.rangeProperties[typedKey].default = newValue;
 
 		// Act
 		const relations = Relation.fromPage(page, DEFAULT_SETTINGS);
@@ -173,5 +176,9 @@ describe('Verify that relations are parsed correctly', () => {
 		expect(relations.length).toBe(1);
 		// @ts-ignore
 		expect(relations[0][typedKey]?.value).toBe(newValue);
+
+		// Reset
+		// @ts-ignore
+		RangeRegistry.registerAttribute(typedKey, 'default', DEFAULT_RANGES[typedKey].default);
 	});
 });

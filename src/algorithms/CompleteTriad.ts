@@ -105,7 +105,7 @@ export class CompleteTriad implements IAlgorithm {
                 }
 
                 // Set the affinity to 0 if not defined by the user
-                existingRel.affinity = newRange('affinity', this.settings.rangeProperties.affinity, existingRel.affinity?.value ?? 0);
+                existingRel.affinity = newRange('affinity', existingRel.affinity?.value ?? 0);
 
                 if (Math.abs(existingRel.affinity?.value ?? 0) < opts.minRelationshipStrength) {
                     continue; // Skip if existing relationship is too weak
@@ -147,20 +147,20 @@ export class CompleteTriad implements IAlgorithm {
 
                 // Add recommendation
                 recommendations.push({
-                    existingCharacter1: character1,
-                    existingCharacter2: character2,
-                    newCharacter: thirdCharacter,
-                    relationBetween1And2: relationBetween1And2,
-                    relationBetweenExistingAndNew: existingRel,
-                    newRelation: new Relation({
-                        source: missingRel.source.id,
-                        target: missingRel.target.id,
-                        label: 'character',
-                        influence: newRange('influence', this.settings.rangeProperties.influence),
-                        affinity: newRange('affinity', this.settings.rangeProperties.affinity, recommendedStrength),
-                    }),
-                    score: balanceScore,
-                });
+					existingCharacter1: character1,
+					existingCharacter2: character2,
+					newCharacter: thirdCharacter,
+					relationBetween1And2: relationBetween1And2,
+					relationBetweenExistingAndNew: existingRel,
+					newRelation: new Relation({
+						source: missingRel.source.id,
+						target: missingRel.target.id,
+						label: 'character',
+						influence: newRange('influence'),
+						affinity: newRange('affinity', recommendedStrength),
+					}),
+					score: balanceScore,
+				});
             }
         }
 

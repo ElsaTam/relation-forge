@@ -20,7 +20,7 @@ export class Place implements IElement {
     constructor(id: string, name: string, ranges: typeof DEFAULT_RANGES) {
         this.id = id;
         this.name = name;
-        this.importance = newRange('placeImportance', ranges.placeImportance);
+        this.importance = newRange('placeImportance');
     }
 
     public getType(): ElementType {
@@ -37,7 +37,7 @@ export class Place implements IElement {
             place.description = page[settings.properties.place.description];
         }
         if (typeof page[settings.properties.place.placeImportance] === 'string') {
-            place.importance = newRange('placeImportance', page[settings.properties.place.placeImportance]);
+            place.importance = newRange('placeImportance');
         }
 
         place.relations = Relation.fromPage(page, settings);
