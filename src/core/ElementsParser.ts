@@ -48,7 +48,7 @@ export class ElementsParser {
         return;
     }
 
-    private static findType(page: Record<string, any>): ElementType | undefined {
+    private static findType(page: IPage): ElementType | undefined {
         const type = page.type;
         switch (type) {
             case 'character':

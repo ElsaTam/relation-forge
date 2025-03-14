@@ -6,8 +6,10 @@ export type IPage = {
     file: {
         path: string;
         name: string;
+		ext: string;
     };
     name?: string;
+	type?: string;
 } & Record<string, any>;
 
 export class DataviewAdapter {
@@ -43,6 +45,10 @@ export class DataviewAdapter {
     page(path: string): IPage {
         return this.dv.page(path);
     }
+
+	pages(): IPage[] {
+		return this.dv.pages().array();
+	}
 
     async characterPages(): Promise<IDVResult> {
         return await this.dv.query("LIST WHERE type=\"character\"");

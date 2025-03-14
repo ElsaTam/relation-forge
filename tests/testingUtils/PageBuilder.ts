@@ -4,7 +4,9 @@ export class PageBuilder {
 	private file: Record<string, string> = {
 		path: "",
 		name: "",
+		ext: "",
 	};
+	private type?: string;
 	private name?: string;
 	private description?: string;
 	private status?: string;
@@ -20,7 +22,9 @@ export class PageBuilder {
 			file: {
 				path: this.file.path,
 				name: this.file.name,
+				ext: this.file.ext,
 			},
+			type: this.type,
 			name: this.name,
 			description: this.description,
 			status: this.status,
@@ -42,8 +46,18 @@ export class PageBuilder {
 		return this;
 	}
 
+	setFileExtension(ext: string): PageBuilder {
+		this.file.ext = ext;
+		return this;
+	}
+
 	setFilename(name: string): PageBuilder {
 		this.file.name = name;
+		return this;
+	}
+
+	setType(type: string): PageBuilder {
+		this.type = type;
 		return this;
 	}
 
@@ -103,8 +117,9 @@ export class PageBuilder {
 	static createFullyPopulatedPage(): IPage {
 		return {
 			file: {
-				path: "Path/to/source.md",
-				name: "",
+				path: "Path/to/note.md",
+				name: "note",
+				ext: ".md",
 			},
 			character_1: { path: "Related Character" },
 			character_1_type: "type of the relation",
