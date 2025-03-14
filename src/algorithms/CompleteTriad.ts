@@ -105,7 +105,7 @@ export class CompleteTriad implements IAlgorithm {
                 }
 
                 // Set the affinity to 0 if not defined by the user
-                existingRel.affinity = newRange('affinity', existingRel.affinity?.value ?? 0);
+                existingRel.affinity = newRange('affinity', this.settings.rangeProperties.affinity, existingRel.affinity?.value ?? 0);
 
                 if (Math.abs(existingRel.affinity?.value ?? 0) < opts.minRelationshipStrength) {
                     continue; // Skip if existing relationship is too weak
@@ -156,8 +156,8 @@ export class CompleteTriad implements IAlgorithm {
                         source: missingRel.source.id,
                         target: missingRel.target.id,
                         label: 'character',
-                        influence: newRange('influence'),
-                        affinity: newRange('affinity', recommendedStrength),
+                        influence: newRange('influence', this.settings.rangeProperties.influence),
+                        affinity: newRange('affinity', this.settings.rangeProperties.affinity, recommendedStrength),
                     }),
                     score: balanceScore,
                 });

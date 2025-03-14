@@ -1,4 +1,13 @@
-import { type IElement, Relation, ElementsParser, type ElementType, NumberRange, newRange, type RelationForgeSettings } from "src/internal";
+import {
+	type IElement,
+	Relation,
+	ElementsParser,
+	type ElementType,
+	NumberRange,
+	newRange,
+	type RelationForgeSettings,
+	DEFAULT_RANGES
+} from 'src/internal';
 
 export class Place implements IElement {
     id: string;
@@ -8,10 +17,10 @@ export class Place implements IElement {
 
     importance: NumberRange<'placeImportance'>;
 
-    constructor(id: string, name: string) {
+    constructor(id: string, name: string, ranges: typeof DEFAULT_RANGES) {
         this.id = id;
         this.name = name;
-        this.importance = newRange('placeImportance');
+        this.importance = newRange('placeImportance', ranges.placeImportance);
     }
 
     public getType(): ElementType {
@@ -22,7 +31,7 @@ export class Place implements IElement {
         const id = page.file.path;
         const name = page.name ?? page.file.name;
 
-        const place = new Place(id, name);
+        const place = new Place(id, name, settings.rangeProperties);
 
         if (typeof page[settings.properties.place.description] === 'string') {
             place.description = page[settings.properties.place.description];

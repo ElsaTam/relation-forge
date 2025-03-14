@@ -5,6 +5,7 @@ import type { Character } from '../../src/elements/Character';
 import type { StatusType } from '../../src/types/StatusType';
 import type { Place } from '../../src/elements/Place';
 import { newRange, type NumberRange } from '../../src/core/NumberRange';
+import { DEFAULT_RANGES } from '../../src/constants/RangeConfigs';
 
 export class ElementBuilder {
 	private id: string = "";
@@ -12,7 +13,7 @@ export class ElementBuilder {
 	private relations: IRelation[] = [];
 	private description: string = "";
 	private type: ElementType = "character";
-	private placeImportance: NumberRange<'placeImportance'> = newRange("placeImportance");
+	private placeImportance: NumberRange<'placeImportance'> = newRange("placeImportance", DEFAULT_RANGES.placeImportance);
 
 	build(): IElement {
 		return {

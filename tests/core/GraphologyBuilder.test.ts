@@ -9,6 +9,7 @@ import { ElementBuilder } from '../testingUtils/ElementBuilder';
 import type { IElement } from '../../src/interfaces/IElement';
 import { PageBuilder } from '../testingUtils/PageBuilder';
 import { DEFAULT_SETTINGS } from '../../src/settings/RelationForgeSettings';
+import { DEFAULT_RANGES } from '../../src/constants/RangeConfigs';
 
 describe('Build the graph correctly', () => {
 	test('Should support md files', () => {
@@ -77,7 +78,7 @@ describe('Build the graph correctly', () => {
 		const relation: Relation = new RelationBuilder()
 			.setSource(sourceID)
 			.setTarget(targetID)
-			.setImpact(newRange('impact', 4))
+			.setImpact(newRange('impact', DEFAULT_RANGES.impact, 4))
 			.build();
 		const core = new Graphology();
 		const edgeID = GraphologyBuilder.getEdgeID(relation)

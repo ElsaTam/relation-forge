@@ -1,13 +1,14 @@
-import { DEFAULT_RANGES, RangeRegistry, type RelationAttribute } from "src/internal";
+import { RangeRegistry, type RelationAttribute } from "src/internal";
 
 
 export function newRange<T extends RelationAttribute>(
     type: T,
+	rangeSettings: {min: number, max: number, default: number},
     value?: number | NumberRange<RelationAttribute>
 ): NumberRange<T> {
     return new NumberRange<T>(
         type,
-        typeof value === "number" ? value : value?.value ?? DEFAULT_RANGES[type].default
+        typeof value === "number" ? value : value?.value ?? rangeSettings.default
     );
 }
 

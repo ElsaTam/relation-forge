@@ -3,12 +3,13 @@ import type { RelationType } from '../../src/types/RelationType';
 import { newRange, NumberRange } from '../../src/core/NumberRange';
 import  { type Forge } from '../../src/core/Forge';
 import type { TFile } from 'obsidian';
+import { DEFAULT_RANGES } from '../../src/constants/RangeConfigs';
 
 export class RelationBuilder {
 	private source: string = "";
 	private target: string = "";
 	private label: RelationType = "character";
-	private influence: NumberRange<'influence'> = newRange('influence');
+	private influence: NumberRange<'influence'> = newRange('influence', DEFAULT_RANGES.influence);
 	private affinity?: NumberRange<'affinity'>;
 	private frequency?: NumberRange<'frequency'>;
 	private impact?: NumberRange<'impact'>;

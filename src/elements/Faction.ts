@@ -1,4 +1,12 @@
-import { type IElement, Relation, ElementsParser, type ElementType, NumberRange, newRange, type RelationForgeSettings } from "src/internal";
+import {
+	type IElement,
+	Relation,
+	type ElementType,
+	NumberRange,
+	newRange,
+	type RelationForgeSettings,
+	DEFAULT_RANGES
+} from 'src/internal';
 
 export class Faction implements IElement {
     id: string;
@@ -8,10 +16,10 @@ export class Faction implements IElement {
 
     power: NumberRange<'power'>;
 
-    constructor(id: string, name: string) {
+    constructor(id: string, name: string, ranges: typeof DEFAULT_RANGES) {
         this.id = id;
         this.name = name;
-        this.power = newRange('power');
+        this.power = newRange('power', ranges.power);
     }
 
     public getType(): ElementType {
@@ -22,7 +30,7 @@ export class Faction implements IElement {
         const id = page.file.path;
         const name = page.name ?? page.file.name;
 
-        const faction = new Faction(id, name);
+        const faction = new Faction(id, name, settings.rangeProperties);
 
         if (typeof page[settings.properties.faction.description] === 'string') {
             faction.description = page[settings.properties.faction.description];

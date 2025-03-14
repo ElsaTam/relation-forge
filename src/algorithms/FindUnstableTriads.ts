@@ -122,9 +122,9 @@ export class FindUnstableTriads implements IAlgorithm {
                     unstableTriads.push({
                         characters: [char1, char2, char3],
                         relationships: [
-                            { source: char1.id, target: char2.id, influence: newRange('influence', rel12?.influence), label: 'character', type: type12 },
-                            { source: char2.id, target: char3.id, influence: newRange('influence', rel23?.influence), label: 'character', type: type23 },
-                            { source: char3.id, target: char1.id, influence: newRange('influence', rel31?.influence), label: 'character', type: type31 }
+                            { source: char1.id, target: char2.id, influence: newRange('influence' ,this.settings.rangeProperties.influence, rel12?.influence), label: 'character', type: type12 },
+                            { source: char2.id, target: char3.id, influence: newRange('influence' ,this.settings.rangeProperties.influence, rel23?.influence), label: 'character', type: type23 },
+                            { source: char3.id, target: char1.id, influence: newRange('influence' ,this.settings.rangeProperties.influence, rel31?.influence), label: 'character', type: type31 }
                         ],
                         isBalanced,
                         score: balanceScore,

@@ -1,4 +1,12 @@
-import { type IElement, Relation, ElementsParser, type ElementType, NumberRange, newRange, type RelationForgeSettings } from "src/internal";
+import {
+	type IElement,
+	Relation,
+	type ElementType,
+	NumberRange,
+	newRange,
+	type RelationForgeSettings,
+	DEFAULT_RANGES
+} from 'src/internal';
 
 type EventProperty = 'importance';
 
@@ -12,10 +20,10 @@ export class Event implements IElement {
     endDate: Date | null = null;
     importance: NumberRange<'eventImportance'>;
 
-    constructor(id: string, name: string,) {
+    constructor(id: string, name: string, ranges: typeof DEFAULT_RANGES) {
         this.id = id;
         this.name = name;
-        this.importance = newRange('eventImportance');
+        this.importance = newRange('eventImportance', ranges.eventImportance);
     }
 
     public getType(): ElementType {
@@ -26,7 +34,7 @@ export class Event implements IElement {
         const id = page.file.path;
         const name = page.name ?? page.file.name;
 
-        const event = new Event(id, name);
+        const event = new Event(id, name, settings.rangeProperties);
 
         if (typeof page[settings.properties.event.description] === 'string') {
             event.description = page[settings.properties.event.description];
