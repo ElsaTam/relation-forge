@@ -59,4 +59,3 @@ export * from './processing/MarkdownCodeBlockProcessor';
 export * from './modals/RangeConfigsModal';
 export * from './settings/SettingTab/RelationForgeSettingTab';
 export { GraphologyBuilder } from './core/GraphologyBuilder';
-export { shouldAddFile } from './core/coreHelpers';

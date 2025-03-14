@@ -1,6 +1,7 @@
 import type { Forge } from './Forge';
 import Graphology from 'graphology';
-import { DataviewAdapter, ElementsParser, shouldAddFile, type IElement } from 'src/internal';
+import { DataviewAdapter, ElementsParser, type IElement, type IRelation } from 'src/internal';
+import type { OBSTFile } from './Obsidian';
 
 export class GraphologyBuilder {
 	static build(forge: Forge): Graphology {
@@ -8,7 +9,7 @@ export class GraphologyBuilder {
 		const graph = new Graphology();
 
 		let files = forge.obsidian.getFiles();
-		files = files.filter(file => shouldAddFile(file));
+		files = files.filter(file => this.shouldAddFile(file));
 
 		for (const sourceFile of files) {
 			const sourcePage = dv.page(sourceFile.path);
@@ -20,28 +21,42 @@ export class GraphologyBuilder {
 			this.addElement(graph, sourceElement);
 
 			for (const relation of relations) {
-				if (!shouldAddFile(forge.obsidian.getFileByPath(relation.target))) continue;
+				if (!this.shouldAddFile(forge.obsidian.getFileByPath(relation.target))) continue;
 
 				const targetElement = ElementsParser.parseFromPath(forge, relation.target);
 				if (!targetElement) continue;
 
 				this.addElement(graph, targetElement);
-
-				graph.addEdgeWithKey(`${sourceElement.id}->${targetElement.id}`, sourceElement.id, targetElement.id, {
-					relation: relation,
-				});
 			}
 		}
 
 		return graph;
 	}
 
-	static addElement(graph: Pick<Graphology, 'hasNode' | 'addNode'>, element: IElement): void {
+	static shouldAddFile(file: OBSTFile | null): boolean {
+		const extension = file?.extension ?? '';
+		return extension === 'md';
+	}
+
+	static addElement(graph: Graphology, element: IElement): void {
 		if (!graph.hasNode(element.id)) {
 			graph.addNode(element.id, {
 				type: element.getType(),
 				element: element,
 			});
 		}
+	}
+
+	static addRelation(graph: Graphology, relation: IRelation): void {
+		const edgeID = this.getEdgeID(relation);
+		if (!graph.hasEdge(edgeID)) {
+			graph.addEdgeWithKey(edgeID, relation.source, relation.target, {
+				relation: relation,
+			});
+		}
+	}
+
+	static getEdgeID(relation: IRelation): string {
+		return `${relation.source}->${relation.target}`;
 	}
 }
